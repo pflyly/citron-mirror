@@ -27,32 +27,9 @@ void TranslatorVisitor::ISBERD(u64 insn) {
         u64 raw;
         BitField<0, 8, IR::Reg> dest_reg;
         BitField<8, 8, IR::Reg> src_reg;
-        BitField<31, 1, u64> skew;
-        BitField<32, 1, u64> o;
-        BitField<33, 2, Mode> mode;
-        BitField<47, 2, Shift> shift;
     } const isberd{insn};
 
-    // Validate unsupported features first
-    if (isberd.skew != 0) {
-        throw NotImplementedException("SKEW");
-    }
-    if (isberd.o != 0) {
-        throw NotImplementedException("O");
-    }
-    if (isberd.mode != Mode::Default) {
-        throw NotImplementedException("Mode {}", isberd.mode.Value());
-    }
-    if (isberd.shift != Shift::Default) {
-        throw NotImplementedException("Shift {}", isberd.shift.Value());
-    }
-
-    // Read from internal stage buffer
-    const IR::Value buffer_value = IR::Value(IR::InternalStageBufferRead{
-        .buffer = X(isberd.src_reg),
-    });
-
-    // Store the result
+    const IR::U32 buffer_value{X(isberd.src_reg)};
     X(isberd.dest_reg, buffer_value);
 }
 
