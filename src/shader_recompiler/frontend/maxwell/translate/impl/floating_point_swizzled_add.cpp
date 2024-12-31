@@ -34,7 +34,7 @@ void TranslatorVisitor::FSWZADD(u64 insn) {
 
     IR::F32 result;
     if (fswzadd.ndv != 0) {
-        const IR::F32 neg_recip = ir.FPNeg(ir.FPDiv(ir.Imm32(ir.f32(1.0f)), src_b));
+        const IR::F32 neg_recip = ir.FPNeg(ir.FPRecip(src_b));
         result = ir.FSwizzleAdd(src_a, neg_recip, swizzle, fp_control);
     } else {
         result = ir.FSwizzleAdd(src_a, src_b, swizzle, fp_control);
