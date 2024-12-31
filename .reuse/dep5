@@ -114,7 +114,7 @@ License: GPL-2.0-or-later
 
 Files: src/citron/compatdb.ui
        src/citron/main.ui
-Copyright: 2014-2017 Citra Emulator Project
+Copyright: 2014-2017 Citra Emulator Project & 2025 Citron Homebrew Project
 License: GPL-2.0-or-later
 
 Files: src/citron/loading_screen.ui
