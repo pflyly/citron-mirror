@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2018 yuzu Emulator Project
+# SPDX-FileCopyrightText: 2018 yuzu Emulator Project & 2025 citron Homebrew Project
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 set(CMAKE_AUTOMOC ON)
@@ -7,12 +7,12 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Set the RPATH for Qt Libraries
-# This must be done before the `yuzu` target is created
-if (YUZU_USE_BUNDLED_QT AND (${CMAKE_SYSTEM_NAME} STREQUAL "Linux"))
+# This must be done before the `citron` target is created
+if (CITRON_USE_BUNDLED_QT AND (${CMAKE_SYSTEM_NAME} STREQUAL "Linux"))
     set(CMAKE_BUILD_RPATH "${CMAKE_BINARY_DIR}/bin/lib/")
 endif()
 
-add_executable(yuzu
+add_executable(citron
     Info.plist
     about_dialog.cpp
     about_dialog.h
@@ -229,22 +229,22 @@ add_executable(yuzu
     vk_device_info.h
     compatdb.cpp
     compatdb.h
-    yuzu.qrc
-    yuzu.rc
+    citron.qrc
+    citron.rc
 )
 
-if (YUZU_CRASH_DUMPS)
-    target_sources(yuzu PRIVATE
+if (CITRON_CRASH_DUMPS)
+    target_sources(citron PRIVATE
         breakpad.cpp
         breakpad.h
     )
 
-    target_link_libraries(yuzu PRIVATE libbreakpad_client)
-    target_compile_definitions(yuzu PRIVATE YUZU_CRASH_DUMPS)
+    target_link_libraries(citron PRIVATE libbreakpad_client)
+    target_compile_definitions(citron PRIVATE CITRON_CRASH_DUMPS)
 endif()
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    target_compile_definitions(yuzu PRIVATE
+    target_compile_definitions(citron PRIVATE
         $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,15>:CANNOT_EXPLICITLY_INSTANTIATE>
     )
 endif()
@@ -256,24 +256,24 @@ file(GLOB_RECURSE ICONS ${PROJECT_SOURCE_DIR}/dist/icons/*)
 file(GLOB_RECURSE THEMES ${PROJECT_SOURCE_DIR}/dist/qt_themes/*)
 
 if (ENABLE_QT_TRANSLATION)
-    set(YUZU_QT_LANGUAGES "${PROJECT_SOURCE_DIR}/dist/languages" CACHE PATH "Path to the translation bundle for the Qt frontend")
+    set(CITRON_QT_LANGUAGES "${PROJECT_SOURCE_DIR}/dist/languages" CACHE PATH "Path to the translation bundle for the Qt frontend")
     option(GENERATE_QT_TRANSLATION "Generate en.ts as the translation source file" OFF)
     option(WORKAROUND_BROKEN_LUPDATE "Run lupdate directly through CMake if Qt's convenience wrappers don't work" OFF)
 
     # Update source TS file if enabled
     if (GENERATE_QT_TRANSLATION)
-        get_target_property(SRCS yuzu SOURCES)
+        get_target_property(SRCS citron SOURCES)
         # these calls to qt_create_translation also creates a rule to generate en.qm which conflicts with providing english plurals
         # so we have to set a OUTPUT_LOCATION so that we don't have multiple rules to generate en.qm
-        set_source_files_properties(${YUZU_QT_LANGUAGES}/en.ts PROPERTIES OUTPUT_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/translations")
+        set_source_files_properties(${CITRON_QT_LANGUAGES}/en.ts PROPERTIES OUTPUT_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/translations")
         if (WORKAROUND_BROKEN_LUPDATE)
-            add_custom_command(OUTPUT ${YUZU_QT_LANGUAGES}/en.ts
+            add_custom_command(OUTPUT ${CITRON_QT_LANGUAGES}/en.ts
                 COMMAND lupdate
                     -source-language en_US
                     -target-language en_US
                     ${SRCS}
                     ${UIS}
-                    -ts ${YUZU_QT_LANGUAGES}/en.ts
+                    -ts ${CITRON_QT_LANGUAGES}/en.ts
                 DEPENDS
                     ${SRCS}
                     ${UIS}
@@ -284,7 +284,7 @@ if (ENABLE_QT_TRANSLATION)
             qt_create_translation(QM_FILES
                 ${SRCS}
                 ${UIS}
-                ${YUZU_QT_LANGUAGES}/en.ts
+                ${CITRON_QT_LANGUAGES}/en.ts
             OPTIONS
                 -source-language en_US
                 -target-language en_US
@@ -312,12 +312,12 @@ if (ENABLE_QT_TRANSLATION)
             qt_create_translation(QM_FILES ${SRCS} ${UIS} ${GENERATED_PLURALS_FILE} OPTIONS -pluralonly -source-language en_US -target-language en_US)
         endif()
 
-        add_custom_target(translation ALL DEPENDS ${YUZU_QT_LANGUAGES}/en.ts ${GENERATED_PLURALS_FILE})
+        add_custom_target(translation ALL DEPENDS ${CITRON_QT_LANGUAGES}/en.ts ${GENERATED_PLURALS_FILE})
     endif()
 
     # Find all TS files except en.ts
-    file(GLOB_RECURSE LANGUAGES_TS ${YUZU_QT_LANGUAGES}/*.ts)
-    list(REMOVE_ITEM LANGUAGES_TS ${YUZU_QT_LANGUAGES}/en.ts)
+    file(GLOB_RECURSE LANGUAGES_TS ${CITRON_QT_LANGUAGES}/*.ts)
+    list(REMOVE_ITEM LANGUAGES_TS ${CITRON_QT_LANGUAGES}/en.ts)
 
     # Compile TS files to QM files
     qt_add_translation(LANGUAGES_QM ${LANGUAGES_TS})
@@ -340,7 +340,7 @@ else()
     set(LANGUAGES)
 endif()
 
-target_sources(yuzu
+target_sources(citron
     PRIVATE
         ${COMPAT_LIST}
         ${ICONS}
@@ -349,11 +349,11 @@ target_sources(yuzu
 )
 
 if (APPLE)
-    set(MACOSX_ICON "../../dist/yuzu.icns")
+    set(MACOSX_ICON "../../dist/citron.icns")
     set_source_files_properties(${MACOSX_ICON} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
-    target_sources(yuzu PRIVATE ${MACOSX_ICON})
-    set_target_properties(yuzu PROPERTIES MACOSX_BUNDLE TRUE)
-    set_target_properties(yuzu PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist)
+    target_sources(citron PRIVATE ${MACOSX_ICON})
+    set_target_properties(citron PROPERTIES MACOSX_BUNDLE TRUE)
+    set_target_properties(citron PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist)
 
     if (NOT USE_SYSTEM_MOLTENVK)
         set(MOLTENVK_PLATFORM "macOS")
@@ -364,36 +364,36 @@ if (APPLE)
     message(STATUS "Using MoltenVK at ${MOLTENVK_LIBRARY}.")
     set_source_files_properties(${MOLTENVK_LIBRARY} PROPERTIES MACOSX_PACKAGE_LOCATION Frameworks
                                     XCODE_FILE_ATTRIBUTES "CodeSignOnCopy")
-    target_sources(yuzu PRIVATE ${MOLTENVK_LIBRARY})
+    target_sources(citron PRIVATE ${MOLTENVK_LIBRARY})
 
 elseif(WIN32)
     # compile as a win32 gui application instead of a console application
     if (QT_VERSION VERSION_GREATER_EQUAL 6)
-        target_link_libraries(yuzu PRIVATE Qt6::EntryPointPrivate)
+        target_link_libraries(citron PRIVATE Qt6::EntryPointPrivate)
     else()
-        target_link_libraries(yuzu PRIVATE Qt5::WinMain)
+        target_link_libraries(citron PRIVATE Qt5::WinMain)
     endif()
     if(MSVC)
-        target_link_libraries(yuzu PRIVATE version.lib)
-        set_target_properties(yuzu PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS")
+        target_link_libraries(citron PRIVATE version.lib)
+        set_target_properties(citron PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS")
     elseif(MINGW)
-        set_target_properties(yuzu PROPERTIES LINK_FLAGS_RELEASE "-Wl,--subsystem,windows")
+        set_target_properties(citron PROPERTIES LINK_FLAGS_RELEASE "-Wl,--subsystem,windows")
     endif()
 endif()
 
-target_link_libraries(yuzu PRIVATE common core input_common frontend_common network video_core)
-target_link_libraries(yuzu PRIVATE Boost::headers glad Qt${QT_MAJOR_VERSION}::Widgets)
-target_link_libraries(yuzu PRIVATE ${PLATFORM_LIBRARIES} Threads::Threads)
+target_link_libraries(citron PRIVATE common core input_common frontend_common network video_core)
+target_link_libraries(citron PRIVATE Boost::headers glad Qt${QT_MAJOR_VERSION}::Widgets)
+target_link_libraries(citron PRIVATE ${PLATFORM_LIBRARIES} Threads::Threads)
 
-target_link_libraries(yuzu PRIVATE Vulkan::Headers)
+target_link_libraries(citron PRIVATE Vulkan::Headers)
 if (NOT WIN32)
-    target_include_directories(yuzu PRIVATE ${Qt${QT_MAJOR_VERSION}Gui_PRIVATE_INCLUDE_DIRS})
+    target_include_directories(citron PRIVATE ${Qt${QT_MAJOR_VERSION}Gui_PRIVATE_INCLUDE_DIRS})
 endif()
 if (UNIX AND NOT APPLE)
-    target_link_libraries(yuzu PRIVATE Qt${QT_MAJOR_VERSION}::DBus)
+    target_link_libraries(citron PRIVATE Qt${QT_MAJOR_VERSION}::DBus)
 endif()
 
-target_compile_definitions(yuzu PRIVATE
+target_compile_definitions(citron PRIVATE
     # Use QStringBuilder for string concatenation to reduce
     # the overall number of temporary strings created.
     -DQT_USE_QSTRINGBUILDER
@@ -412,69 +412,69 @@ target_compile_definitions(yuzu PRIVATE
     -DQT_NO_URL_CAST_FROM_STRING
 )
 
-if (YUZU_ENABLE_COMPATIBILITY_REPORTING)
-    target_compile_definitions(yuzu PRIVATE -DYUZU_ENABLE_COMPATIBILITY_REPORTING)
+if (CITRON_ENABLE_COMPATIBILITY_REPORTING)
+    target_compile_definitions(citron PRIVATE -DCITRON_ENABLE_COMPATIBILITY_REPORTING)
 endif()
 
 if (USE_DISCORD_PRESENCE)
-    target_sources(yuzu PUBLIC
+    target_sources(citron PUBLIC
         discord_impl.cpp
         discord_impl.h
     )
-    target_link_libraries(yuzu PRIVATE DiscordRPC::discord-rpc httplib::httplib Qt${QT_MAJOR_VERSION}::Network)
-    target_compile_definitions(yuzu PRIVATE -DUSE_DISCORD_PRESENCE)
+    target_link_libraries(citron PRIVATE DiscordRPC::discord-rpc httplib::httplib Qt${QT_MAJOR_VERSION}::Network)
+    target_compile_definitions(citron PRIVATE -DUSE_DISCORD_PRESENCE)
 endif()
 
 if (ENABLE_WEB_SERVICE)
-    target_compile_definitions(yuzu PRIVATE -DENABLE_WEB_SERVICE)
+    target_compile_definitions(citron PRIVATE -DENABLE_WEB_SERVICE)
 endif()
 
-if (YUZU_USE_QT_MULTIMEDIA)
-    target_link_libraries(yuzu PRIVATE Qt${QT_MAJOR_VERSION}::Multimedia)
-    target_compile_definitions(yuzu PRIVATE -DYUZU_USE_QT_MULTIMEDIA)
+if (CITRON_USE_QT_MULTIMEDIA)
+    target_link_libraries(citron PRIVATE Qt${QT_MAJOR_VERSION}::Multimedia)
+    target_compile_definitions(citron PRIVATE -DCITRON_USE_QT_MULTIMEDIA)
 endif ()
 
-if (YUZU_USE_QT_WEB_ENGINE)
-    target_link_libraries(yuzu PRIVATE Qt${QT_MAJOR_VERSION}::WebEngineCore Qt${QT_MAJOR_VERSION}::WebEngineWidgets)
-    target_compile_definitions(yuzu PRIVATE -DYUZU_USE_QT_WEB_ENGINE)
+if (CITRON_USE_QT_WEB_ENGINE)
+    target_link_libraries(citron PRIVATE Qt${QT_MAJOR_VERSION}::WebEngineCore Qt${QT_MAJOR_VERSION}::WebEngineWidgets)
+    target_compile_definitions(citron PRIVATE -DCITRON_USE_QT_WEB_ENGINE)
 endif ()
 
 if(UNIX AND NOT APPLE)
-    install(TARGETS yuzu)
+    install(TARGETS citron)
 endif()
 
 if (WIN32 AND QT_VERSION VERSION_GREATER_EQUAL 6)
-    set(YUZU_EXE_DIR "$<TARGET_FILE_DIR:yuzu>")
-    add_custom_command(TARGET yuzu POST_BUILD COMMAND ${WINDEPLOYQT_EXECUTABLE} "${YUZU_EXE_DIR}/yuzu.exe" --dir "${YUZU_EXE_DIR}" --libdir "${YUZU_EXE_DIR}" --plugindir "${YUZU_EXE_DIR}/plugins" --no-compiler-runtime --no-opengl-sw --no-system-d3d-compiler --no-translations --verbose 0)
+    set(CITRON_EXE_DIR "$<TARGET_FILE_DIR:citron>")
+    add_custom_command(TARGET citron POST_BUILD COMMAND ${WINDEPLOYQT_EXECUTABLE} "${CITRON_EXE_DIR}/citron.exe" --dir "${CITRON_EXE_DIR}" --libdir "${CITRON_EXE_DIR}" --plugindir "${CITRON_EXE_DIR}/plugins" --no-compiler-runtime --no-opengl-sw --no-system-d3d-compiler --no-translations --verbose 0)
 endif()
 
-if (YUZU_USE_BUNDLED_QT AND QT_VERSION VERSION_LESS 6)
-    include(CopyYuzuQt5Deps)
-    copy_yuzu_Qt5_deps(yuzu)
+if (CITRON_USE_BUNDLED_QT AND QT_VERSION VERSION_LESS 6)
+    include(CopyCitronQt5Deps)
+    copy_citron_Qt5_deps(citron)
 endif()
 
 if (ENABLE_SDL2)
-    target_link_libraries(yuzu PRIVATE SDL2::SDL2)
-    target_compile_definitions(yuzu PRIVATE HAVE_SDL2)
+    target_link_libraries(citron PRIVATE SDL2::SDL2)
+    target_compile_definitions(citron PRIVATE HAVE_SDL2)
 endif()
 
 if (MSVC)
-    include(CopyYuzuSDLDeps)
-    include(CopyYuzuFFmpegDeps)
-    copy_yuzu_SDL_deps(yuzu)
-    copy_yuzu_FFmpeg_deps(yuzu)
+    include(CopyCitronSDLDeps)
+    include(CopyCitronFFmpegDeps)
+    copy_citron_SDL_deps(citron)
+    copy_citron_FFmpeg_deps(citron)
 endif()
 
 if (NOT APPLE AND ENABLE_OPENGL)
-    target_compile_definitions(yuzu PRIVATE HAS_OPENGL)
+    target_compile_definitions(citron PRIVATE HAS_OPENGL)
 endif()
 
 if (ARCHITECTURE_x86_64 OR ARCHITECTURE_arm64)
-    target_link_libraries(yuzu PRIVATE dynarmic::dynarmic)
+    target_link_libraries(citron PRIVATE dynarmic::dynarmic)
 endif()
 
-if (YUZU_USE_PRECOMPILED_HEADERS)
-    target_precompile_headers(yuzu PRIVATE precompiled_headers.h)
+if (CITRON_USE_PRECOMPILED_HEADERS)
+    target_precompile_headers(citron PRIVATE precompiled_headers.h)
 endif()
 
-create_target_directory_groups(yuzu)
+create_target_directory_groups(citron)

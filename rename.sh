@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define old and new strings
-old="yuzu"
+old="citron"
 new="citron"
 
 # Find and rename directories first

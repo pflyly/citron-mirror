@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2020 yuzu Emulator Project
+// SPDX-FileCopyrightText: Copyright 2020 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QCheckBox>
@@ -7,8 +7,8 @@
 #include <QLabel>
 #include <QListWidget>
 #include <QVBoxLayout>
-#include "yuzu/install_dialog.h"
-#include "yuzu/uisettings.h"
+#include "citron/install_dialog.h"
+#include "citron/uisettings.h"
 
 InstallDialog::InstallDialog(QWidget* parent, const QStringList& files) : QDialog(parent) {
     file_list = new QListWidget(this);

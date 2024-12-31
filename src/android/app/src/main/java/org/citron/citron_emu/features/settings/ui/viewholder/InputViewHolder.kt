@@ -1,18 +1,18 @@
-// SPDX-FileCopyrightText: 2024 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2024 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.features.settings.ui.viewholder
+package org.citron.citron_emu.features.settings.ui.viewholder
 
 import android.view.View
-import org.yuzu.yuzu_emu.databinding.ListItemSettingInputBinding
-import org.yuzu.yuzu_emu.features.input.NativeInput
-import org.yuzu.yuzu_emu.features.settings.model.view.AnalogInputSetting
-import org.yuzu.yuzu_emu.features.settings.model.view.ButtonInputSetting
-import org.yuzu.yuzu_emu.features.settings.model.view.InputSetting
-import org.yuzu.yuzu_emu.features.settings.model.view.ModifierInputSetting
-import org.yuzu.yuzu_emu.features.settings.model.view.SettingsItem
-import org.yuzu.yuzu_emu.features.settings.ui.SettingsAdapter
-import org.yuzu.yuzu_emu.utils.ViewUtils.setVisible
+import org.citron.citron_emu.databinding.ListItemSettingInputBinding
+import org.citron.citron_emu.features.input.NativeInput
+import org.citron.citron_emu.features.settings.model.view.AnalogInputSetting
+import org.citron.citron_emu.features.settings.model.view.ButtonInputSetting
+import org.citron.citron_emu.features.settings.model.view.InputSetting
+import org.citron.citron_emu.features.settings.model.view.ModifierInputSetting
+import org.citron.citron_emu.features.settings.model.view.SettingsItem
+import org.citron.citron_emu.features.settings.ui.SettingsAdapter
+import org.citron.citron_emu.utils.ViewUtils.setVisible
 
 class InputViewHolder(val binding: ListItemSettingInputBinding, adapter: SettingsAdapter) :
     SettingViewHolder(binding.root, adapter) {

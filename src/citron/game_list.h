@@ -17,8 +17,8 @@
 #include "common/common_types.h"
 #include "core/core.h"
 #include "uisettings.h"
-#include "yuzu/compatibility_list.h"
-#include "yuzu/play_time_manager.h"
+#include "citron/compatibility_list.h"
+#include "citron/play_time_manager.h"
 
 namespace Core {
 class System;

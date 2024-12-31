@@ -1,7 +1,7 @@
-// SPDX-FileCopyrightText: 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.features.settings.ui
+package org.citron.citron_emu.features.settings.ui
 
 import android.content.Context
 import android.os.Bundle
@@ -19,13 +19,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.divider.MaterialDividerItemDecoration
 import com.google.android.material.transition.MaterialSharedAxis
 import info.debatty.java.stringsimilarity.Cosine
-import org.yuzu.yuzu_emu.R
-import org.yuzu.yuzu_emu.databinding.FragmentSettingsSearchBinding
-import org.yuzu.yuzu_emu.features.settings.model.view.SettingsItem
-import org.yuzu.yuzu_emu.utils.NativeConfig
-import org.yuzu.yuzu_emu.utils.ViewUtils.setVisible
-import org.yuzu.yuzu_emu.utils.ViewUtils.updateMargins
-import org.yuzu.yuzu_emu.utils.collect
+import org.citron.citron_emu.R
+import org.citron.citron_emu.databinding.FragmentSettingsSearchBinding
+import org.citron.citron_emu.features.settings.model.view.SettingsItem
+import org.citron.citron_emu.utils.NativeConfig
+import org.citron.citron_emu.utils.ViewUtils.setVisible
+import org.citron.citron_emu.utils.ViewUtils.updateMargins
+import org.citron.citron_emu.utils.collect
 
 class SettingsSearchFragment : Fragment() {
     private var _binding: FragmentSettingsSearchBinding? = null

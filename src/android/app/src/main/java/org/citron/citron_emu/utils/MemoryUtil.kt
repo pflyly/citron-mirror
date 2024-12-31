@@ -1,18 +1,18 @@
-// SPDX-FileCopyrightText: 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.utils
+package org.citron.citron_emu.utils
 
 import android.app.ActivityManager
 import android.content.Context
 import android.os.Build
-import org.yuzu.yuzu_emu.R
-import org.yuzu.yuzu_emu.YuzuApplication
+import org.citron.citron_emu.R
+import org.citron.citron_emu.CitronApplication
 import java.util.Locale
 import kotlin.math.ceil
 
 object MemoryUtil {
-    private val context get() = YuzuApplication.appContext
+    private val context get() = CitronApplication.appContext
 
     private val Float.hundredths: String
         get() = String.format(Locale.ROOT, "%.2f", this)

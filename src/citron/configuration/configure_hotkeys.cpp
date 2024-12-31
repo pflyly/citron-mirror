@@ -11,10 +11,10 @@
 
 #include "frontend_common/config.h"
 #include "ui_configure_hotkeys.h"
-#include "yuzu/configuration/configure_hotkeys.h"
-#include "yuzu/hotkeys.h"
-#include "yuzu/uisettings.h"
-#include "yuzu/util/sequence_dialog/sequence_dialog.h"
+#include "citron/configuration/configure_hotkeys.h"
+#include "citron/hotkeys.h"
+#include "citron/uisettings.h"
+#include "citron/util/sequence_dialog/sequence_dialog.h"
 
 constexpr int name_column = 0;
 constexpr int hotkey_column = 1;

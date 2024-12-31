@@ -1,16 +1,16 @@
-// SPDX-FileCopyrightText: 2024 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2024 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.features.settings.ui
+package org.citron.citron_emu.features.settings.ui
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.yuzu.yuzu_emu.YuzuApplication
-import org.yuzu.yuzu_emu.adapters.AbstractListAdapter
-import org.yuzu.yuzu_emu.databinding.ListItemInputProfileBinding
-import org.yuzu.yuzu_emu.viewholder.AbstractViewHolder
-import org.yuzu.yuzu_emu.R
+import org.citron.citron_emu.CitronApplication
+import org.citron.citron_emu.adapters.AbstractListAdapter
+import org.citron.citron_emu.databinding.ListItemInputProfileBinding
+import org.citron.citron_emu.viewholder.AbstractViewHolder
+import org.citron.citron_emu.R
 
 class InputProfileAdapter(options: List<ProfileItem>) :
     AbstractListAdapter<ProfileItem, AbstractViewHolder<ProfileItem>>(options) {
@@ -57,7 +57,7 @@ sealed interface ProfileItem {
 data class NewProfileItem(
     val createNewProfile: () -> Unit
 ) : ProfileItem {
-    override val name: String = YuzuApplication.appContext.getString(R.string.create_new_profile)
+    override val name: String = CitronApplication.appContext.getString(R.string.create_new_profile)
 }
 
 data class ExistingProfileItem(

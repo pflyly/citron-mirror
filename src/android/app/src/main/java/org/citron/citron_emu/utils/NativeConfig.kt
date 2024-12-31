@@ -1,12 +1,12 @@
-// SPDX-FileCopyrightText: 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.utils
+package org.citron.citron_emu.utils
 
-import org.yuzu.yuzu_emu.model.GameDir
-import org.yuzu.yuzu_emu.overlay.model.OverlayControlData
+import org.citron.citron_emu.model.GameDir
+import org.citron.citron_emu.overlay.model.OverlayControlData
 
-import org.yuzu.yuzu_emu.features.input.model.PlayerInput
+import org.citron.citron_emu.features.input.model.PlayerInput
 
 object NativeConfig {
     /**

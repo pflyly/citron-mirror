@@ -12,13 +12,13 @@
 #include "core/internal_network/network_interface.h"
 #include "network/network.h"
 #include "ui_direct_connect.h"
-#include "yuzu/main.h"
-#include "yuzu/multiplayer/client_room.h"
-#include "yuzu/multiplayer/direct_connect.h"
-#include "yuzu/multiplayer/message.h"
-#include "yuzu/multiplayer/state.h"
-#include "yuzu/multiplayer/validation.h"
-#include "yuzu/uisettings.h"
+#include "citron/main.h"
+#include "citron/multiplayer/client_room.h"
+#include "citron/multiplayer/direct_connect.h"
+#include "citron/multiplayer/message.h"
+#include "citron/multiplayer/state.h"
+#include "citron/multiplayer/validation.h"
+#include "citron/uisettings.h"
 
 enum class ConnectionType : u8 { TraversalServer, IP };
 
@@ -36,9 +36,9 @@ DirectConnectWindow::DirectConnectWindow(Core::System& system_, QWidget* parent)
     ui->nickname->setValidator(validation.GetNickname());
     ui->nickname->setText(
         QString::fromStdString(UISettings::values.multiplayer_nickname.GetValue()));
-    if (ui->nickname->text().isEmpty() && !Settings::values.yuzu_username.GetValue().empty()) {
-        // Use yuzu Web Service user name as nickname by default
-        ui->nickname->setText(QString::fromStdString(Settings::values.yuzu_username.GetValue()));
+    if (ui->nickname->text().isEmpty() && !Settings::values.citron_username.GetValue().empty()) {
+        // Use citron Web Service user name as nickname by default
+        ui->nickname->setText(QString::fromStdString(Settings::values.citron_username.GetValue()));
     }
     ui->ip->setValidator(validation.GetIP());
     ui->ip->setText(QString::fromStdString(UISettings::values.multiplayer_ip.GetValue()));

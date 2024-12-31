@@ -1,14 +1,14 @@
-// SPDX-FileCopyrightText: 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.adapters
+package org.citron.citron_emu.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import org.yuzu.yuzu_emu.databinding.CardInstallableBinding
-import org.yuzu.yuzu_emu.model.Installable
-import org.yuzu.yuzu_emu.utils.ViewUtils.setVisible
-import org.yuzu.yuzu_emu.viewholder.AbstractViewHolder
+import org.citron.citron_emu.databinding.CardInstallableBinding
+import org.citron.citron_emu.model.Installable
+import org.citron.citron_emu.utils.ViewUtils.setVisible
+import org.citron.citron_emu.viewholder.AbstractViewHolder
 
 class InstallableAdapter(installables: List<Installable>) :
     AbstractListAdapter<Installable, InstallableAdapter.InstallableViewHolder>(installables) {

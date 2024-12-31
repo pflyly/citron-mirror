@@ -1,7 +1,7 @@
-// SPDX-FileCopyrightText: 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.adapters
+package org.citron.citron_emu.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,14 +9,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.LifecycleOwner
-import org.yuzu.yuzu_emu.R
-import org.yuzu.yuzu_emu.databinding.CardHomeOptionBinding
-import org.yuzu.yuzu_emu.fragments.MessageDialogFragment
-import org.yuzu.yuzu_emu.model.HomeSetting
-import org.yuzu.yuzu_emu.utils.ViewUtils.marquee
-import org.yuzu.yuzu_emu.utils.ViewUtils.setVisible
-import org.yuzu.yuzu_emu.utils.collect
-import org.yuzu.yuzu_emu.viewholder.AbstractViewHolder
+import org.citron.citron_emu.R
+import org.citron.citron_emu.databinding.CardHomeOptionBinding
+import org.citron.citron_emu.fragments.MessageDialogFragment
+import org.citron.citron_emu.model.HomeSetting
+import org.citron.citron_emu.utils.ViewUtils.marquee
+import org.citron.citron_emu.utils.ViewUtils.setVisible
+import org.citron.citron_emu.utils.collect
+import org.citron.citron_emu.viewholder.AbstractViewHolder
 
 class HomeSettingAdapter(
     private val activity: AppCompatActivity,

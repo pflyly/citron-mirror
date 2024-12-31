@@ -1,7 +1,7 @@
-// SPDX-FileCopyrightText: 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.fragments
+package org.citron.citron_emu.fragments
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -21,16 +21,16 @@ import androidx.preference.PreferenceManager
 import info.debatty.java.stringsimilarity.Jaccard
 import info.debatty.java.stringsimilarity.JaroWinkler
 import java.util.Locale
-import org.yuzu.yuzu_emu.R
-import org.yuzu.yuzu_emu.YuzuApplication
-import org.yuzu.yuzu_emu.adapters.GameAdapter
-import org.yuzu.yuzu_emu.databinding.FragmentSearchBinding
-import org.yuzu.yuzu_emu.layout.AutofitGridLayoutManager
-import org.yuzu.yuzu_emu.model.Game
-import org.yuzu.yuzu_emu.model.GamesViewModel
-import org.yuzu.yuzu_emu.model.HomeViewModel
-import org.yuzu.yuzu_emu.utils.ViewUtils.setVisible
-import org.yuzu.yuzu_emu.utils.collect
+import org.citron.citron_emu.R
+import org.citron.citron_emu.CitronApplication
+import org.citron.citron_emu.adapters.GameAdapter
+import org.citron.citron_emu.databinding.FragmentSearchBinding
+import org.citron.citron_emu.layout.AutofitGridLayoutManager
+import org.citron.citron_emu.model.Game
+import org.citron.citron_emu.model.GamesViewModel
+import org.citron.citron_emu.model.HomeViewModel
+import org.citron.citron_emu.utils.ViewUtils.setVisible
+import org.citron.citron_emu.utils.collect
 
 class SearchFragment : Fragment() {
     private var _binding: FragmentSearchBinding? = null
@@ -58,7 +58,7 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         homeViewModel.setNavigationVisibility(visible = true, animated = true)
         homeViewModel.setStatusBarShadeVisibility(true)
-        preferences = PreferenceManager.getDefaultSharedPreferences(YuzuApplication.appContext)
+        preferences = PreferenceManager.getDefaultSharedPreferences(CitronApplication.appContext)
 
         if (savedInstanceState != null) {
             binding.searchText.setText(savedInstanceState.getString(SEARCH_TEXT))

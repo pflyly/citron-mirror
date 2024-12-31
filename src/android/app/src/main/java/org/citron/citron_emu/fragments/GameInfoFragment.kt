@@ -1,7 +1,7 @@
-// SPDX-FileCopyrightText: 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.fragments
+package org.citron.citron_emu.fragments
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -21,14 +21,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.transition.MaterialSharedAxis
-import org.yuzu.yuzu_emu.NativeLibrary
-import org.yuzu.yuzu_emu.R
-import org.yuzu.yuzu_emu.databinding.FragmentGameInfoBinding
-import org.yuzu.yuzu_emu.model.GameVerificationResult
-import org.yuzu.yuzu_emu.model.HomeViewModel
-import org.yuzu.yuzu_emu.utils.GameMetadata
-import org.yuzu.yuzu_emu.utils.ViewUtils.setVisible
-import org.yuzu.yuzu_emu.utils.ViewUtils.updateMargins
+import org.citron.citron_emu.NativeLibrary
+import org.citron.citron_emu.R
+import org.citron.citron_emu.databinding.FragmentGameInfoBinding
+import org.citron.citron_emu.model.GameVerificationResult
+import org.citron.citron_emu.model.HomeViewModel
+import org.citron.citron_emu.utils.GameMetadata
+import org.citron.citron_emu.utils.ViewUtils.setVisible
+import org.citron.citron_emu.utils.ViewUtils.updateMargins
 
 class GameInfoFragment : Fragment() {
     private var _binding: FragmentGameInfoBinding? = null

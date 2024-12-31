@@ -1,11 +1,11 @@
-// SPDX-FileCopyrightText: 2024 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2024 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.features.settings.model.view
+package org.citron.citron_emu.features.settings.model.view
 
-import org.yuzu.yuzu_emu.R
-import org.yuzu.yuzu_emu.features.input.NativeInput
-import org.yuzu.yuzu_emu.utils.NativeConfig
+import org.citron.citron_emu.R
+import org.citron.citron_emu.features.input.NativeInput
+import org.citron.citron_emu.utils.NativeConfig
 
 class InputProfileSetting(private val playerIndex: Int) :
     SettingsItem(emptySetting, R.string.profile, "", 0, "") {

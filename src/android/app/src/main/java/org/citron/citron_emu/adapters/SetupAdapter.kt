@@ -1,7 +1,7 @@
-// SPDX-FileCopyrightText: 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.adapters
+package org.citron.citron_emu.adapters
 
 import android.text.Html
 import android.view.LayoutInflater
@@ -10,14 +10,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.button.MaterialButton
-import org.yuzu.yuzu_emu.databinding.PageSetupBinding
-import org.yuzu.yuzu_emu.model.HomeViewModel
-import org.yuzu.yuzu_emu.model.SetupCallback
-import org.yuzu.yuzu_emu.model.SetupPage
-import org.yuzu.yuzu_emu.model.StepState
-import org.yuzu.yuzu_emu.utils.ViewUtils
-import org.yuzu.yuzu_emu.utils.ViewUtils.setVisible
-import org.yuzu.yuzu_emu.viewholder.AbstractViewHolder
+import org.citron.citron_emu.databinding.PageSetupBinding
+import org.citron.citron_emu.model.HomeViewModel
+import org.citron.citron_emu.model.SetupCallback
+import org.citron.citron_emu.model.SetupPage
+import org.citron.citron_emu.model.StepState
+import org.citron.citron_emu.utils.ViewUtils
+import org.citron.citron_emu.utils.ViewUtils.setVisible
+import org.citron.citron_emu.viewholder.AbstractViewHolder
 
 class SetupAdapter(val activity: AppCompatActivity, pages: List<SetupPage>) :
     AbstractListAdapter<SetupPage, SetupAdapter.SetupPageViewHolder>(pages) {

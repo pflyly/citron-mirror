@@ -1,7 +1,7 @@
-// SPDX-FileCopyrightText: 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.fragments
+package org.citron.citron_emu.fragments
 
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
@@ -24,27 +24,27 @@ import com.google.android.material.transition.MaterialSharedAxis
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.yuzu.yuzu_emu.HomeNavigationDirections
-import org.yuzu.yuzu_emu.R
-import org.yuzu.yuzu_emu.YuzuApplication
-import org.yuzu.yuzu_emu.adapters.GamePropertiesAdapter
-import org.yuzu.yuzu_emu.databinding.FragmentGamePropertiesBinding
-import org.yuzu.yuzu_emu.features.settings.model.Settings
-import org.yuzu.yuzu_emu.model.DriverViewModel
-import org.yuzu.yuzu_emu.model.GameProperty
-import org.yuzu.yuzu_emu.model.GamesViewModel
-import org.yuzu.yuzu_emu.model.HomeViewModel
-import org.yuzu.yuzu_emu.model.InstallableProperty
-import org.yuzu.yuzu_emu.model.SubmenuProperty
-import org.yuzu.yuzu_emu.model.TaskState
-import org.yuzu.yuzu_emu.utils.DirectoryInitialization
-import org.yuzu.yuzu_emu.utils.FileUtil
-import org.yuzu.yuzu_emu.utils.GameIconUtils
-import org.yuzu.yuzu_emu.utils.GpuDriverHelper
-import org.yuzu.yuzu_emu.utils.MemoryUtil
-import org.yuzu.yuzu_emu.utils.ViewUtils.marquee
-import org.yuzu.yuzu_emu.utils.ViewUtils.updateMargins
-import org.yuzu.yuzu_emu.utils.collect
+import org.citron.citron_emu.HomeNavigationDirections
+import org.citron.citron_emu.R
+import org.citron.citron_emu.CitronApplication
+import org.citron.citron_emu.adapters.GamePropertiesAdapter
+import org.citron.citron_emu.databinding.FragmentGamePropertiesBinding
+import org.citron.citron_emu.features.settings.model.Settings
+import org.citron.citron_emu.model.DriverViewModel
+import org.citron.citron_emu.model.GameProperty
+import org.citron.citron_emu.model.GamesViewModel
+import org.citron.citron_emu.model.HomeViewModel
+import org.citron.citron_emu.model.InstallableProperty
+import org.citron.citron_emu.model.SubmenuProperty
+import org.citron.citron_emu.model.TaskState
+import org.citron.citron_emu.utils.DirectoryInitialization
+import org.citron.citron_emu.utils.FileUtil
+import org.citron.citron_emu.utils.GameIconUtils
+import org.citron.citron_emu.utils.GpuDriverHelper
+import org.citron.citron_emu.utils.MemoryUtil
+import org.citron.citron_emu.utils.ViewUtils.marquee
+import org.citron.citron_emu.utils.ViewUtils.updateMargins
+import org.citron.citron_emu.utils.collect
 import java.io.BufferedOutputStream
 import java.io.File
 
@@ -224,7 +224,7 @@ class GamePropertiesFragment : Fragment() {
                                     negativeAction = {
                                         File(args.game.saveDir).deleteRecursively()
                                         Toast.makeText(
-                                            YuzuApplication.appContext,
+                                            CitronApplication.appContext,
                                             R.string.save_data_deleted_successfully,
                                             Toast.LENGTH_SHORT
                                         ).show()
@@ -263,7 +263,7 @@ class GamePropertiesFragment : Fragment() {
                                 positiveAction = {
                                     shaderCacheDir.deleteRecursively()
                                     Toast.makeText(
-                                        YuzuApplication.appContext,
+                                        CitronApplication.appContext,
                                         R.string.cleared_shaders_successfully,
                                         Toast.LENGTH_SHORT
                                     ).show()
@@ -374,7 +374,7 @@ class GamePropertiesFragment : Fragment() {
                             return@withContext
                         }
                         Toast.makeText(
-                            YuzuApplication.appContext,
+                            CitronApplication.appContext,
                             getString(R.string.save_file_imported_success),
                             Toast.LENGTH_LONG
                         ).show()
@@ -384,7 +384,7 @@ class GamePropertiesFragment : Fragment() {
                     cacheSaveDir.deleteRecursively()
                 } catch (e: Exception) {
                     Toast.makeText(
-                        YuzuApplication.appContext,
+                        CitronApplication.appContext,
                         getString(R.string.fatal_error),
                         Toast.LENGTH_LONG
                     ).show()

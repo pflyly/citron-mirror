@@ -1,4 +1,4 @@
-@rem SPDX-FileCopyrightText: 2023 yuzu Emulator Project
+@rem SPDX-FileCopyrightText: 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 @rem SPDX-License-Identifier: GPL-3.0-or-later
 
 @if "%DEBUG%" == "" @echo off

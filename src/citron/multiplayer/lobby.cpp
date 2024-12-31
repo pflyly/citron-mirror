@@ -11,15 +11,15 @@
 #include "core/internal_network/network_interface.h"
 #include "network/network.h"
 #include "ui_lobby.h"
-#include "yuzu/game_list_p.h"
-#include "yuzu/main.h"
-#include "yuzu/multiplayer/client_room.h"
-#include "yuzu/multiplayer/lobby.h"
-#include "yuzu/multiplayer/lobby_p.h"
-#include "yuzu/multiplayer/message.h"
-#include "yuzu/multiplayer/state.h"
-#include "yuzu/multiplayer/validation.h"
-#include "yuzu/uisettings.h"
+#include "citron/game_list_p.h"
+#include "citron/main.h"
+#include "citron/multiplayer/client_room.h"
+#include "citron/multiplayer/lobby.h"
+#include "citron/multiplayer/lobby_p.h"
+#include "citron/multiplayer/message.h"
+#include "citron/multiplayer/state.h"
+#include "citron/multiplayer/validation.h"
+#include "citron/uisettings.h"
 #ifdef ENABLE_WEB_SERVICE
 #include "web_service/web_backend.h"
 #endif
@@ -64,14 +64,14 @@ Lobby::Lobby(QWidget* parent, QStandardItemModel* list,
         QString::fromStdString(UISettings::values.multiplayer_nickname.GetValue()));
 
     // Try find the best nickname by default
-    if (ui->nickname->text().isEmpty() || ui->nickname->text() == QStringLiteral("yuzu")) {
-        if (!Settings::values.yuzu_username.GetValue().empty()) {
+    if (ui->nickname->text().isEmpty() || ui->nickname->text() == QStringLiteral("citron")) {
+        if (!Settings::values.citron_username.GetValue().empty()) {
             ui->nickname->setText(
-                QString::fromStdString(Settings::values.yuzu_username.GetValue()));
+                QString::fromStdString(Settings::values.citron_username.GetValue()));
         } else if (!GetProfileUsername().empty()) {
             ui->nickname->setText(QString::fromStdString(GetProfileUsername()));
         } else {
-            ui->nickname->setText(QStringLiteral("yuzu"));
+            ui->nickname->setText(QStringLiteral("citron"));
         }
     }
 
@@ -187,11 +187,11 @@ void Lobby::OnJoinRoom(const QModelIndex& source) {
     QFuture<void> f = QtConcurrent::run([nickname, ip, port, password, verify_uid, this] {
         std::string token;
 #ifdef ENABLE_WEB_SERVICE
-        if (!Settings::values.yuzu_username.GetValue().empty() &&
-            !Settings::values.yuzu_token.GetValue().empty()) {
+        if (!Settings::values.citron_username.GetValue().empty() &&
+            !Settings::values.citron_token.GetValue().empty()) {
             WebService::Client client(Settings::values.web_api_url.GetValue(),
-                                      Settings::values.yuzu_username.GetValue(),
-                                      Settings::values.yuzu_token.GetValue());
+                                      Settings::values.citron_username.GetValue(),
+                                      Settings::values.citron_token.GetValue());
             token = client.GetExternalJWT(verify_uid).returned_data;
             if (token.empty()) {
                 LOG_ERROR(WebService, "Could not get external JWT, verification may fail");

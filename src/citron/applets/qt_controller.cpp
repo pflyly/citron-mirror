@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2020 yuzu Emulator Project
+// SPDX-FileCopyrightText: Copyright 2020 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <algorithm>
@@ -15,14 +15,14 @@
 #include "hid_core/hid_types.h"
 #include "hid_core/resources/npad/npad.h"
 #include "ui_qt_controller.h"
-#include "yuzu/applets/qt_controller.h"
-#include "yuzu/configuration/configure_input.h"
-#include "yuzu/configuration/configure_input_profile_dialog.h"
-#include "yuzu/configuration/configure_motion_touch.h"
-#include "yuzu/configuration/configure_vibration.h"
-#include "yuzu/configuration/input_profiles.h"
-#include "yuzu/main.h"
-#include "yuzu/util/controller_navigation.h"
+#include "citron/applets/qt_controller.h"
+#include "citron/configuration/configure_input.h"
+#include "citron/configuration/configure_input_profile_dialog.h"
+#include "citron/configuration/configure_motion_touch.h"
+#include "citron/configuration/configure_vibration.h"
+#include "citron/configuration/input_profiles.h"
+#include "citron/main.h"
+#include "citron/util/controller_navigation.h"
 
 namespace {
 

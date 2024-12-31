@@ -1,11 +1,11 @@
-// SPDX-FileCopyrightText: 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.overlay.model
+package org.citron.citron_emu.overlay.model
 
 import androidx.annotation.IntegerRes
-import org.yuzu.yuzu_emu.R
-import org.yuzu.yuzu_emu.YuzuApplication
+import org.citron.citron_emu.R
+import org.citron.citron_emu.CitronApplication
 
 enum class OverlayControl(
     val id: String,
@@ -136,7 +136,7 @@ enum class OverlayControl(
 
     fun getDefaultPositionForLayout(layout: OverlayLayout): Pair<Double, Double> {
         val rawResourcePair: Pair<Int, Int>
-        YuzuApplication.appContext.resources.apply {
+        CitronApplication.appContext.resources.apply {
             rawResourcePair = when (layout) {
                 OverlayLayout.Landscape -> {
                     Pair(

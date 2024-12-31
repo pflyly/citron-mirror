@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2020 yuzu Emulator Project
+// SPDX-FileCopyrightText: Copyright 2020 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <memory>
@@ -11,8 +11,8 @@
 #include "configuration/shared_widget.h"
 #include "core/core.h"
 #include "ui_configure_cpu.h"
-#include "yuzu/configuration/configuration_shared.h"
-#include "yuzu/configuration/configure_cpu.h"
+#include "citron/configuration/configuration_shared.h"
+#include "citron/configuration/configure_cpu.h"
 
 ConfigureCpu::ConfigureCpu(const Core::System& system_,
                            std::shared_ptr<std::vector<ConfigurationShared::Tab*>> group_,

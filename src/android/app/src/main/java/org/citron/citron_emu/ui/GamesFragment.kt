@@ -1,7 +1,7 @@
-// SPDX-FileCopyrightText: 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.ui
+package org.citron.citron_emu.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,15 +14,15 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.color.MaterialColors
-import org.yuzu.yuzu_emu.R
-import org.yuzu.yuzu_emu.adapters.GameAdapter
-import org.yuzu.yuzu_emu.databinding.FragmentGamesBinding
-import org.yuzu.yuzu_emu.layout.AutofitGridLayoutManager
-import org.yuzu.yuzu_emu.model.GamesViewModel
-import org.yuzu.yuzu_emu.model.HomeViewModel
-import org.yuzu.yuzu_emu.utils.ViewUtils.setVisible
-import org.yuzu.yuzu_emu.utils.ViewUtils.updateMargins
-import org.yuzu.yuzu_emu.utils.collect
+import org.citron.citron_emu.R
+import org.citron.citron_emu.adapters.GameAdapter
+import org.citron.citron_emu.databinding.FragmentGamesBinding
+import org.citron.citron_emu.layout.AutofitGridLayoutManager
+import org.citron.citron_emu.model.GamesViewModel
+import org.citron.citron_emu.model.HomeViewModel
+import org.citron.citron_emu.utils.ViewUtils.setVisible
+import org.citron.citron_emu.utils.ViewUtils.updateMargins
+import org.citron.citron_emu.utils.collect
 
 class GamesFragment : Fragment() {
     private var _binding: FragmentGamesBinding? = null

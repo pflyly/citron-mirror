@@ -12,11 +12,11 @@
 #include "common/logging/log.h"
 #include "network/announce_multiplayer_session.h"
 #include "ui_client_room.h"
-#include "yuzu/game_list_p.h"
-#include "yuzu/multiplayer/client_room.h"
-#include "yuzu/multiplayer/message.h"
-#include "yuzu/multiplayer/moderation_dialog.h"
-#include "yuzu/multiplayer/state.h"
+#include "citron/game_list_p.h"
+#include "citron/multiplayer/client_room.h"
+#include "citron/multiplayer/message.h"
+#include "citron/multiplayer/moderation_dialog.h"
+#include "citron/multiplayer/state.h"
 
 ClientRoomWindow::ClientRoomWindow(QWidget* parent, Network::RoomNetwork& room_network_)
     : QDialog(parent, Qt::WindowTitleHint | Qt::WindowCloseButtonHint | Qt::WindowSystemMenuHint),

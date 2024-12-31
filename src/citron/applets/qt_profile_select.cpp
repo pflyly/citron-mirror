@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2018 yuzu Emulator Project
+// SPDX-FileCopyrightText: Copyright 2018 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <mutex>
@@ -16,9 +16,9 @@
 #include "core/constants.h"
 #include "core/core.h"
 #include "core/hle/service/acc/profile_manager.h"
-#include "yuzu/applets/qt_profile_select.h"
-#include "yuzu/main.h"
-#include "yuzu/util/controller_navigation.h"
+#include "citron/applets/qt_profile_select.h"
+#include "citron/main.h"
+#include "citron/util/controller_navigation.h"
 
 namespace {
 QString FormatUserEntryText(const QString& username, Common::UUID uuid) {
@@ -30,7 +30,7 @@ QString FormatUserEntryText(const QString& username, Common::UUID uuid) {
 
 QString GetImagePath(Common::UUID uuid) {
     const auto path =
-        Common::FS::GetYuzuPath(Common::FS::YuzuPath::NANDDir) /
+        Common::FS::GetCitronPath(Common::FS::CitronPath::NANDDir) /
         fmt::format("system/save/8000000000000010/su/avators/{}.jpg", uuid.FormattedString());
     return QString::fromStdString(Common::FS::PathToUTF8String(path));
 }

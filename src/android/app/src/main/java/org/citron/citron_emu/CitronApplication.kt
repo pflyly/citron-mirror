@@ -1,22 +1,22 @@
-// SPDX-FileCopyrightText: 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu
+package org.citron.citron_emu
 
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import org.yuzu.yuzu_emu.features.input.NativeInput
+import org.citron.citron_emu.features.input.NativeInput
 import java.io.File
-import org.yuzu.yuzu_emu.utils.DirectoryInitialization
-import org.yuzu.yuzu_emu.utils.DocumentsTree
-import org.yuzu.yuzu_emu.utils.GpuDriverHelper
-import org.yuzu.yuzu_emu.utils.Log
+import org.citron.citron_emu.utils.DirectoryInitialization
+import org.citron.citron_emu.utils.DocumentsTree
+import org.citron.citron_emu.utils.GpuDriverHelper
+import org.citron.citron_emu.utils.Log
 
 fun Context.getPublicFilesDir(): File = getExternalFilesDir(null) ?: filesDir
 
-class YuzuApplication : Application() {
+class CitronApplication : Application() {
     private fun createNotificationChannels() {
         val noticeChannel = NotificationChannel(
             getString(R.string.notice_notification_channel_id),
@@ -47,7 +47,7 @@ class YuzuApplication : Application() {
 
     companion object {
         var documentsTree: DocumentsTree? = null
-        lateinit var application: YuzuApplication
+        lateinit var application: CitronApplication
 
         val appContext: Context
             get() = application.applicationContext

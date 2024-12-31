@@ -1,13 +1,13 @@
-// SPDX-FileCopyrightText: 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.layout
+package org.citron.citron_emu.layout
 
 import android.content.Context
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Recycler
-import org.yuzu.yuzu_emu.R
+import org.citron.citron_emu.R
 
 /**
  *  Cut down version of the solution provided here

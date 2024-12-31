@@ -1,16 +1,16 @@
-// SPDX-FileCopyrightText: 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.features.settings.ui.viewholder
+package org.citron.citron_emu.features.settings.ui.viewholder
 
 import android.view.View
-import org.yuzu.yuzu_emu.databinding.ListItemSettingBinding
-import org.yuzu.yuzu_emu.features.settings.model.view.IntSingleChoiceSetting
-import org.yuzu.yuzu_emu.features.settings.model.view.SettingsItem
-import org.yuzu.yuzu_emu.features.settings.model.view.SingleChoiceSetting
-import org.yuzu.yuzu_emu.features.settings.model.view.StringSingleChoiceSetting
-import org.yuzu.yuzu_emu.features.settings.ui.SettingsAdapter
-import org.yuzu.yuzu_emu.utils.ViewUtils.setVisible
+import org.citron.citron_emu.databinding.ListItemSettingBinding
+import org.citron.citron_emu.features.settings.model.view.IntSingleChoiceSetting
+import org.citron.citron_emu.features.settings.model.view.SettingsItem
+import org.citron.citron_emu.features.settings.model.view.SingleChoiceSetting
+import org.citron.citron_emu.features.settings.model.view.StringSingleChoiceSetting
+import org.citron.citron_emu.features.settings.ui.SettingsAdapter
+import org.citron.citron_emu.utils.ViewUtils.setVisible
 
 class SingleChoiceViewHolder(val binding: ListItemSettingBinding, adapter: SettingsAdapter) :
     SettingViewHolder(binding.root, adapter) {

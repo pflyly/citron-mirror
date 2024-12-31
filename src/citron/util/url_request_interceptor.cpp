@@ -1,9 +1,9 @@
-// SPDX-FileCopyrightText: Copyright 2020 yuzu Emulator Project
+// SPDX-FileCopyrightText: Copyright 2020 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#ifdef YUZU_USE_QT_WEB_ENGINE
+#ifdef CITRON_USE_QT_WEB_ENGINE
 
-#include "yuzu/util/url_request_interceptor.h"
+#include "citron/util/url_request_interceptor.h"
 
 UrlRequestInterceptor::UrlRequestInterceptor(QObject* p) : QWebEngineUrlRequestInterceptor(p) {}
 

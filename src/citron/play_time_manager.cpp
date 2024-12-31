@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "common/alignment.h"
@@ -9,7 +9,7 @@
 #include "common/settings.h"
 #include "common/thread.h"
 #include "core/hle/service/acc/profile_manager.h"
-#include "yuzu/play_time_manager.h"
+#include "citron/play_time_manager.h"
 
 namespace PlayTime {
 
@@ -26,7 +26,7 @@ std::optional<std::filesystem::path> GetCurrentUserPlayTimePath(
     if (!uuid.has_value()) {
         return std::nullopt;
     }
-    return Common::FS::GetYuzuPath(Common::FS::YuzuPath::PlayTimeDir) /
+    return Common::FS::GetCitronPath(Common::FS::CitronPath::PlayTimeDir) /
            uuid->RawString().append(".bin");
 }
 

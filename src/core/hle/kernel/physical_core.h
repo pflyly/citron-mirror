@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2020 yuzu Emulator Project
+// SPDX-FileCopyrightText: Copyright 2020 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #pragma once
@@ -26,8 +26,8 @@ public:
     PhysicalCore(KernelCore& kernel, std::size_t core_index);
     ~PhysicalCore();
 
-    YUZU_NON_COPYABLE(PhysicalCore);
-    YUZU_NON_MOVEABLE(PhysicalCore);
+    CITRON_NON_COPYABLE(PhysicalCore);
+    CITRON_NON_MOVEABLE(PhysicalCore);
 
     // Execute guest code running on the given thread.
     void RunThread(KThread* thread);

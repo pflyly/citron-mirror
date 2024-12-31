@@ -19,9 +19,9 @@
 #include "core/file_sys/xts_archive.h"
 #include "core/loader/loader.h"
 #include "ui_configure_per_game_addons.h"
-#include "yuzu/configuration/configure_input.h"
-#include "yuzu/configuration/configure_per_game_addons.h"
-#include "yuzu/uisettings.h"
+#include "citron/configuration/configure_input.h"
+#include "citron/configuration/configure_per_game_addons.h"
+#include "citron/uisettings.h"
 
 ConfigurePerGameAddons::ConfigurePerGameAddons(Core::System& system_, QWidget* parent)
     : QWidget(parent), ui{std::make_unique<Ui::ConfigurePerGameAddons>()}, system{system_} {
@@ -80,7 +80,7 @@ void ConfigurePerGameAddons::ApplyConfiguration() {
     std::sort(disabled_addons.begin(), disabled_addons.end());
     std::sort(current.begin(), current.end());
     if (disabled_addons != current) {
-        Common::FS::RemoveFile(Common::FS::GetYuzuPath(Common::FS::YuzuPath::CacheDir) /
+        Common::FS::RemoveFile(Common::FS::GetCitronPath(Common::FS::CitronPath::CacheDir) /
                                "game_list" / fmt::format("{:016X}.pv.txt", title_id));
     }
 

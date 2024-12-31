@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2020 yuzu Emulator Project
+// SPDX-FileCopyrightText: Copyright 2020 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #pragma once
@@ -14,9 +14,9 @@
 #include "core/file_sys/vfs/vfs_types.h"
 #include "frontend_common/config.h"
 #include "vk_device_info.h"
-#include "yuzu/configuration/configuration_shared.h"
-#include "yuzu/configuration/qt_config.h"
-#include "yuzu/configuration/shared_translation.h"
+#include "citron/configuration/configuration_shared.h"
+#include "citron/configuration/qt_config.h"
+#include "citron/configuration/shared_translation.h"
 
 namespace Core {
 class System;

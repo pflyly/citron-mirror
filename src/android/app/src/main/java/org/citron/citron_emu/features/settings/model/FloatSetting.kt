@@ -1,9 +1,9 @@
-// SPDX-FileCopyrightText: 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.features.settings.model
+package org.citron.citron_emu.features.settings.model
 
-import org.yuzu.yuzu_emu.utils.NativeConfig
+import org.citron.citron_emu.utils.NativeConfig
 
 enum class FloatSetting(override val key: String) : AbstractFloatSetting {
     // No float settings currently exist

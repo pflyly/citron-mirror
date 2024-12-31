@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2021 yuzu Emulator Project
+// SPDX-FileCopyrightText: Copyright 2021 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #pragma once
@@ -27,8 +27,8 @@ private:                                                                        
     static constexpr inline ClassTokenType ClassToken() { return ::Kernel::ClassToken<CLASS>; }    \
                                                                                                    \
 public:                                                                                            \
-    YUZU_NON_COPYABLE(CLASS);                                                                      \
-    YUZU_NON_MOVEABLE(CLASS);                                                                      \
+    CITRON_NON_COPYABLE(CLASS);                                                                      \
+    CITRON_NON_MOVEABLE(CLASS);                                                                      \
                                                                                                    \
     using BaseClass = BASE_CLASS;                                                                  \
     static constexpr TypeObj GetStaticTypeObj() {                                                  \
@@ -211,7 +211,7 @@ private:
 template <typename T>
 class KScopedAutoObject {
 public:
-    YUZU_NON_COPYABLE(KScopedAutoObject);
+    CITRON_NON_COPYABLE(KScopedAutoObject);
 
     constexpr KScopedAutoObject() = default;
 

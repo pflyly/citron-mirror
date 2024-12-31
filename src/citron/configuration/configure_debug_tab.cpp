@@ -1,11 +1,11 @@
-// SPDX-FileCopyrightText: Copyright 2021 yuzu Emulator Project
+// SPDX-FileCopyrightText: Copyright 2021 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <memory>
 #include "ui_configure_debug_tab.h"
-#include "yuzu/configuration/configure_cpu_debug.h"
-#include "yuzu/configuration/configure_debug.h"
-#include "yuzu/configuration/configure_debug_tab.h"
+#include "citron/configuration/configure_cpu_debug.h"
+#include "citron/configuration/configure_debug.h"
+#include "citron/configuration/configure_debug_tab.h"
 
 ConfigureDebugTab::ConfigureDebugTab(const Core::System& system_, QWidget* parent)
     : QWidget(parent), ui{std::make_unique<Ui::ConfigureDebugTab>()},

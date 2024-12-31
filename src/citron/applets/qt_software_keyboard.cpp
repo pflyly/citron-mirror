@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2021 yuzu Emulator Project
+// SPDX-FileCopyrightText: Copyright 2021 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QCursor>
@@ -14,9 +14,9 @@
 #include "hid_core/hid_core.h"
 #include "hid_core/hid_types.h"
 #include "ui_qt_software_keyboard.h"
-#include "yuzu/applets/qt_software_keyboard.h"
-#include "yuzu/main.h"
-#include "yuzu/util/overlay_dialog.h"
+#include "citron/applets/qt_software_keyboard.h"
+#include "citron/main.h"
+#include "citron/util/overlay_dialog.h"
 
 namespace {
 

@@ -1,7 +1,7 @@
-// SPDX-FileCopyrightText: 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.fragments
+package org.citron.citron_emu.fragments
 
 import android.Manifest
 import android.content.Intent
@@ -27,23 +27,23 @@ import androidx.preference.PreferenceManager
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.google.android.material.transition.MaterialFadeThrough
 import kotlinx.coroutines.launch
-import org.yuzu.yuzu_emu.NativeLibrary
+import org.citron.citron_emu.NativeLibrary
 import java.io.File
-import org.yuzu.yuzu_emu.R
-import org.yuzu.yuzu_emu.YuzuApplication
-import org.yuzu.yuzu_emu.adapters.SetupAdapter
-import org.yuzu.yuzu_emu.databinding.FragmentSetupBinding
-import org.yuzu.yuzu_emu.features.settings.model.Settings
-import org.yuzu.yuzu_emu.model.HomeViewModel
-import org.yuzu.yuzu_emu.model.SetupCallback
-import org.yuzu.yuzu_emu.model.SetupPage
-import org.yuzu.yuzu_emu.model.StepState
-import org.yuzu.yuzu_emu.ui.main.MainActivity
-import org.yuzu.yuzu_emu.utils.DirectoryInitialization
-import org.yuzu.yuzu_emu.utils.NativeConfig
-import org.yuzu.yuzu_emu.utils.ViewUtils
-import org.yuzu.yuzu_emu.utils.ViewUtils.setVisible
-import org.yuzu.yuzu_emu.utils.collect
+import org.citron.citron_emu.R
+import org.citron.citron_emu.CitronApplication
+import org.citron.citron_emu.adapters.SetupAdapter
+import org.citron.citron_emu.databinding.FragmentSetupBinding
+import org.citron.citron_emu.features.settings.model.Settings
+import org.citron.citron_emu.model.HomeViewModel
+import org.citron.citron_emu.model.SetupCallback
+import org.citron.citron_emu.model.SetupPage
+import org.citron.citron_emu.model.StepState
+import org.citron.citron_emu.ui.main.MainActivity
+import org.citron.citron_emu.utils.DirectoryInitialization
+import org.citron.citron_emu.utils.NativeConfig
+import org.citron.citron_emu.utils.ViewUtils
+import org.citron.citron_emu.utils.ViewUtils.setVisible
+import org.citron.citron_emu.utils.collect
 
 class SetupFragment : Fragment() {
     private var _binding: FragmentSetupBinding? = null
@@ -100,7 +100,7 @@ class SetupFragment : Fragment() {
         pages.apply {
             add(
                 SetupPage(
-                    R.drawable.ic_yuzu_title,
+                    R.drawable.ic_citron_title,
                     R.string.welcome,
                     R.string.welcome_description,
                     0,
@@ -343,7 +343,7 @@ class SetupFragment : Fragment() {
         }
 
     private fun finishSetup() {
-        PreferenceManager.getDefaultSharedPreferences(YuzuApplication.appContext).edit()
+        PreferenceManager.getDefaultSharedPreferences(CitronApplication.appContext).edit()
             .putBoolean(Settings.PREF_FIRST_APP_LAUNCH, false)
             .apply()
         mainActivity.finishSetup(binding.root.findNavController())

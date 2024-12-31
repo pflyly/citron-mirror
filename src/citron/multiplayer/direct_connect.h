@@ -6,7 +6,7 @@
 #include <memory>
 #include <QDialog>
 #include <QFutureWatcher>
-#include "yuzu/multiplayer/validation.h"
+#include "citron/multiplayer/validation.h"
 
 namespace Ui {
 class DirectConnect;

@@ -21,12 +21,12 @@
 #include "input_common/drivers/mouse.h"
 #include "input_common/main.h"
 #include "ui_configure_input_player.h"
-#include "yuzu/bootmanager.h"
-#include "yuzu/configuration/configure_input_player.h"
-#include "yuzu/configuration/configure_input_player_widget.h"
-#include "yuzu/configuration/configure_mouse_panning.h"
-#include "yuzu/configuration/input_profiles.h"
-#include "yuzu/util/limitable_input_dialog.h"
+#include "citron/bootmanager.h"
+#include "citron/configuration/configure_input_player.h"
+#include "citron/configuration/configure_input_player_widget.h"
+#include "citron/configuration/configure_mouse_panning.h"
+#include "citron/configuration/input_profiles.h"
+#include "citron/util/limitable_input_dialog.h"
 
 const std::array<std::string, ConfigureInputPlayer::ANALOG_SUB_BUTTONS_NUM>
     ConfigureInputPlayer::analog_sub_buttons{{

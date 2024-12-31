@@ -1,7 +1,7 @@
-// SPDX-FileCopyrightText: 2024 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2024 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.features.settings.ui
+package org.citron.citron_emu.features.settings.ui
 
 import android.app.Dialog
 import android.os.Bundle
@@ -13,11 +13,11 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.yuzu.yuzu_emu.R
-import org.yuzu.yuzu_emu.databinding.DialogInputProfilesBinding
-import org.yuzu.yuzu_emu.features.settings.model.view.InputProfileSetting
-import org.yuzu.yuzu_emu.fragments.MessageDialogFragment
-import org.yuzu.yuzu_emu.utils.collect
+import org.citron.citron_emu.R
+import org.citron.citron_emu.databinding.DialogInputProfilesBinding
+import org.citron.citron_emu.features.settings.model.view.InputProfileSetting
+import org.citron.citron_emu.fragments.MessageDialogFragment
+import org.citron.citron_emu.utils.collect
 
 class InputProfileDialogFragment : DialogFragment() {
     private var position = 0

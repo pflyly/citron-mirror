@@ -1,12 +1,12 @@
-// SPDX-FileCopyrightText: 2024 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2024 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.viewholder
+package org.citron.citron_emu.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import org.yuzu.yuzu_emu.adapters.AbstractDiffAdapter
-import org.yuzu.yuzu_emu.adapters.AbstractListAdapter
+import org.citron.citron_emu.adapters.AbstractDiffAdapter
+import org.citron.citron_emu.adapters.AbstractListAdapter
 
 /**
  * [RecyclerView.ViewHolder] meant to work together with a [AbstractDiffAdapter] or a

@@ -1,7 +1,7 @@
-// SPDX-FileCopyrightText: 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-// SDL will break our main function in yuzu-cmd if we don't define this before adding SDL.h
+// SDL will break our main function in citron-cmd if we don't define this before adding SDL.h
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
 

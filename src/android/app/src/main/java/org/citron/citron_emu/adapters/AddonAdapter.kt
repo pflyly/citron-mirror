@@ -1,14 +1,14 @@
-// SPDX-FileCopyrightText: 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.adapters
+package org.citron.citron_emu.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import org.yuzu.yuzu_emu.databinding.ListItemAddonBinding
-import org.yuzu.yuzu_emu.model.Patch
-import org.yuzu.yuzu_emu.model.AddonViewModel
-import org.yuzu.yuzu_emu.viewholder.AbstractViewHolder
+import org.citron.citron_emu.databinding.ListItemAddonBinding
+import org.citron.citron_emu.model.Patch
+import org.citron.citron_emu.model.AddonViewModel
+import org.citron.citron_emu.viewholder.AbstractViewHolder
 
 class AddonAdapter(val addonViewModel: AddonViewModel) :
     AbstractDiffAdapter<Patch, AddonAdapter.AddonViewHolder>() {

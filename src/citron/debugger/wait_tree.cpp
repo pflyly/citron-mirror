@@ -4,8 +4,8 @@
 #include <array>
 #include <fmt/format.h>
 
-#include "yuzu/debugger/wait_tree.h"
-#include "yuzu/uisettings.h"
+#include "citron/debugger/wait_tree.h"
+#include "citron/uisettings.h"
 
 #include "core/arm/debug.h"
 #include "core/core.h"

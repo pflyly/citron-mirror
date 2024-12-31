@@ -1,10 +1,10 @@
-// SPDX-FileCopyrightText: 2024 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2024 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.adapters
+package org.citron.citron_emu.adapters
 
-import org.yuzu.yuzu_emu.model.SelectableItem
-import org.yuzu.yuzu_emu.viewholder.AbstractViewHolder
+import org.citron.citron_emu.model.SelectableItem
+import org.citron.citron_emu.viewholder.AbstractViewHolder
 
 /**
  * Generic list class meant to take care of single selection UI updates

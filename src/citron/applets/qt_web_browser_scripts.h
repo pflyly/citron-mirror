@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2020 yuzu Emulator Project
+// SPDX-FileCopyrightText: Copyright 2020 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #pragma once
@@ -91,13 +91,13 @@ window.addEventListener("gamepaddisconnected", function(e) {
 
 constexpr char WINDOW_NX_SCRIPT[] = R"(
 var end_applet = false;
-var yuzu_key_callbacks = [];
+var citron_key_callbacks = [];
 
 (function() {
     class WindowNX {
         constructor() {
-            yuzu_key_callbacks[1] = function() { window.history.back(); };
-            yuzu_key_callbacks[2] = function() { window.nx.endApplet(); };
+            citron_key_callbacks[1] = function() { window.history.back(); };
+            citron_key_callbacks[2] = function() { window.nx.endApplet(); };
         }
 
         addEventListener(type, listener, options) {
@@ -131,22 +131,22 @@ var yuzu_key_callbacks = [];
 
             switch (key) {
                 case "A":
-                    yuzu_key_callbacks[0] = func;
+                    citron_key_callbacks[0] = func;
                     break;
                 case "B":
-                    yuzu_key_callbacks[1] = func;
+                    citron_key_callbacks[1] = func;
                     break;
                 case "X":
-                    yuzu_key_callbacks[2] = func;
+                    citron_key_callbacks[2] = func;
                     break;
                 case "Y":
-                    yuzu_key_callbacks[3] = func;
+                    citron_key_callbacks[3] = func;
                     break;
                 case "L":
-                    yuzu_key_callbacks[6] = func;
+                    citron_key_callbacks[6] = func;
                     break;
                 case "R":
-                    yuzu_key_callbacks[7] = func;
+                    citron_key_callbacks[7] = func;
                     break;
             }
         }
@@ -160,22 +160,22 @@ var yuzu_key_callbacks = [];
 
             switch (key) {
                 case "A":
-                    yuzu_key_callbacks[0] = function() {};
+                    citron_key_callbacks[0] = function() {};
                     break;
                 case "B":
-                    yuzu_key_callbacks[1] = function() {};
+                    citron_key_callbacks[1] = function() {};
                     break;
                 case "X":
-                    yuzu_key_callbacks[2] = function() {};
+                    citron_key_callbacks[2] = function() {};
                     break;
                 case "Y":
-                    yuzu_key_callbacks[3] = function() {};
+                    citron_key_callbacks[3] = function() {};
                     break;
                 case "L":
-                    yuzu_key_callbacks[6] = function() {};
+                    citron_key_callbacks[6] = function() {};
                     break;
                 case "R":
-                    yuzu_key_callbacks[7] = function() {};
+                    citron_key_callbacks[7] = function() {};
                     break;
             }
         }

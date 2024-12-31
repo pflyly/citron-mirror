@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: Copyright 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #pragma once
@@ -14,8 +14,8 @@ namespace FileSys {
 using namespace Common::Literals;
 
 class AesCtrCounterExtendedStorage : public IReadOnlyStorage {
-    YUZU_NON_COPYABLE(AesCtrCounterExtendedStorage);
-    YUZU_NON_MOVEABLE(AesCtrCounterExtendedStorage);
+    CITRON_NON_COPYABLE(AesCtrCounterExtendedStorage);
+    CITRON_NON_MOVEABLE(AesCtrCounterExtendedStorage);
 
 public:
     static constexpr size_t BlockSize = 0x10;

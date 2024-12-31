@@ -1,21 +1,21 @@
-// SPDX-FileCopyrightText: 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.adapters
+package org.citron.citron_emu.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.LifecycleOwner
-import org.yuzu.yuzu_emu.databinding.CardInstallableIconBinding
-import org.yuzu.yuzu_emu.databinding.CardSimpleOutlinedBinding
-import org.yuzu.yuzu_emu.model.GameProperty
-import org.yuzu.yuzu_emu.model.InstallableProperty
-import org.yuzu.yuzu_emu.model.SubmenuProperty
-import org.yuzu.yuzu_emu.utils.ViewUtils.marquee
-import org.yuzu.yuzu_emu.utils.ViewUtils.setVisible
-import org.yuzu.yuzu_emu.utils.collect
-import org.yuzu.yuzu_emu.viewholder.AbstractViewHolder
+import org.citron.citron_emu.databinding.CardInstallableIconBinding
+import org.citron.citron_emu.databinding.CardSimpleOutlinedBinding
+import org.citron.citron_emu.model.GameProperty
+import org.citron.citron_emu.model.InstallableProperty
+import org.citron.citron_emu.model.SubmenuProperty
+import org.citron.citron_emu.utils.ViewUtils.marquee
+import org.citron.citron_emu.utils.ViewUtils.setVisible
+import org.citron.citron_emu.utils.collect
+import org.citron.citron_emu.viewholder.AbstractViewHolder
 
 class GamePropertiesAdapter(
     private val viewLifecycle: LifecycleOwner,

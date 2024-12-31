@@ -35,10 +35,10 @@
 #include "network/network.h"
 #include "sdl_config.h"
 #include "video_core/renderer_base.h"
-#include "yuzu_cmd/emu_window/emu_window_sdl2.h"
-#include "yuzu_cmd/emu_window/emu_window_sdl2_gl.h"
-#include "yuzu_cmd/emu_window/emu_window_sdl2_null.h"
-#include "yuzu_cmd/emu_window/emu_window_sdl2_vk.h"
+#include "citron_cmd/emu_window/emu_window_sdl2.h"
+#include "citron_cmd/emu_window/emu_window_sdl2_gl.h"
+#include "citron_cmd/emu_window/emu_window_sdl2_null.h"
+#include "citron_cmd/emu_window/emu_window_sdl2_vk.h"
 
 #ifdef _WIN32
 // windows.h needs to be included before shellapi.h
@@ -83,7 +83,7 @@ static void PrintHelp(const char* argv0) {
 }
 
 static void PrintVersion() {
-    std::cout << "yuzu " << Common::g_scm_branch << " " << Common::g_scm_desc << std::endl;
+    std::cout << "citron " << Common::g_scm_branch << " " << Common::g_scm_desc << std::endl;
 }
 
 static void OnStateChanged(const Network::RoomMember::State& state) {
@@ -396,7 +396,7 @@ int main(int argc, char** argv) {
             const u16 error_id = static_cast<u16>(load_result) - loader_id;
             LOG_CRITICAL(Frontend,
                          "While attempting to load the ROM requested, an error occurred. Please "
-                         "refer to the yuzu wiki for more information or the yuzu discord for "
+                         "refer to the citron wiki for more information or the citron discord for "
                          "additional help.\n\nError Code: {:04X}-{:04X}\nError Description: {}",
                          loader_id, error_id, static_cast<Loader::ResultStatus>(error_id));
         }

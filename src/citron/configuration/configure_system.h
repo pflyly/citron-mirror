@@ -8,7 +8,7 @@
 #include <vector>
 
 #include <QWidget>
-#include "yuzu/configuration/configuration_shared.h"
+#include "citron/configuration/configuration_shared.h"
 
 class QCheckBox;
 class QLineEdit;

@@ -1,10 +1,10 @@
-// SPDX-FileCopyrightText: 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 // SPDX-License-Identifier: MPL-2.0
 // Copyright © 2023 Skyline Team and Contributors (https://github.com/skyline-emu/)
 
-package org.yuzu.yuzu_emu.features
+package org.citron.citron_emu.features
 
 import android.database.Cursor
 import android.database.MatrixCursor
@@ -14,14 +14,14 @@ import android.provider.DocumentsContract
 import android.provider.DocumentsProvider
 import android.webkit.MimeTypeMap
 import java.io.*
-import org.yuzu.yuzu_emu.BuildConfig
-import org.yuzu.yuzu_emu.R
-import org.yuzu.yuzu_emu.YuzuApplication
-import org.yuzu.yuzu_emu.getPublicFilesDir
+import org.citron.citron_emu.BuildConfig
+import org.citron.citron_emu.R
+import org.citron.citron_emu.CitronApplication
+import org.citron.citron_emu.getPublicFilesDir
 
 class DocumentProvider : DocumentsProvider() {
     private val baseDirectory: File
-        get() = File(YuzuApplication.application.getPublicFilesDir().canonicalPath)
+        get() = File(CitronApplication.application.getPublicFilesDir().canonicalPath)
 
     companion object {
         private val DEFAULT_ROOT_PROJECTION: Array<String> = arrayOf(
@@ -91,7 +91,7 @@ class DocumentProvider : DocumentsProvider() {
             add(DocumentsContract.Root.COLUMN_DOCUMENT_ID, getDocumentId(baseDirectory))
             add(DocumentsContract.Root.COLUMN_MIME_TYPES, "*/*")
             add(DocumentsContract.Root.COLUMN_AVAILABLE_BYTES, baseDirectory.freeSpace)
-            add(DocumentsContract.Root.COLUMN_ICON, R.drawable.ic_yuzu)
+            add(DocumentsContract.Root.COLUMN_ICON, R.drawable.ic_citron)
         }
 
         return cursor
@@ -288,7 +288,7 @@ class DocumentProvider : DocumentsProvider() {
             add(DocumentsContract.Document.COLUMN_LAST_MODIFIED, localFile.lastModified())
             add(DocumentsContract.Document.COLUMN_FLAGS, flags)
             if (localFile == baseDirectory) {
-                add(DocumentsContract.Root.COLUMN_ICON, R.drawable.ic_yuzu)
+                add(DocumentsContract.Root.COLUMN_ICON, R.drawable.ic_citron)
             }
         }
 

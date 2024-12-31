@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: Copyright 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #pragma once
@@ -49,8 +49,8 @@ class KResourceLimit;
 class KSystemResource;
 
 class KPageTableBase {
-    YUZU_NON_COPYABLE(KPageTableBase);
-    YUZU_NON_MOVEABLE(KPageTableBase);
+    CITRON_NON_COPYABLE(KPageTableBase);
+    CITRON_NON_MOVEABLE(KPageTableBase);
 
 public:
     using TraversalEntry = Common::PageTable::TraversalEntry;

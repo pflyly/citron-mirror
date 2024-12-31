@@ -1,15 +1,15 @@
-// SPDX-FileCopyrightText: 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.disk_shader_cache
+package org.citron.citron_emu.disk_shader_cache
 
 import androidx.annotation.Keep
 import androidx.lifecycle.ViewModelProvider
-import org.yuzu.yuzu_emu.NativeLibrary
-import org.yuzu.yuzu_emu.R
-import org.yuzu.yuzu_emu.activities.EmulationActivity
-import org.yuzu.yuzu_emu.model.EmulationViewModel
-import org.yuzu.yuzu_emu.utils.Log
+import org.citron.citron_emu.NativeLibrary
+import org.citron.citron_emu.R
+import org.citron.citron_emu.activities.EmulationActivity
+import org.citron.citron_emu.model.EmulationViewModel
+import org.citron.citron_emu.utils.Log
 
 @Keep
 object DiskShaderCacheProgress {

@@ -1,15 +1,15 @@
-// SPDX-FileCopyrightText: 2024 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2024 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.features.input
+package org.citron.citron_emu.features.input
 
-import org.yuzu.yuzu_emu.features.input.model.NativeButton
-import org.yuzu.yuzu_emu.features.input.model.NativeAnalog
-import org.yuzu.yuzu_emu.features.input.model.InputType
-import org.yuzu.yuzu_emu.features.input.model.ButtonName
-import org.yuzu.yuzu_emu.features.input.model.NpadStyleIndex
-import org.yuzu.yuzu_emu.utils.NativeConfig
-import org.yuzu.yuzu_emu.utils.ParamPackage
+import org.citron.citron_emu.features.input.model.NativeButton
+import org.citron.citron_emu.features.input.model.NativeAnalog
+import org.citron.citron_emu.features.input.model.InputType
+import org.citron.citron_emu.features.input.model.ButtonName
+import org.citron.citron_emu.features.input.model.NpadStyleIndex
+import org.citron.citron_emu.utils.NativeConfig
+import org.citron.citron_emu.utils.ParamPackage
 import android.view.InputDevice
 
 object NativeInput {
@@ -177,9 +177,9 @@ object NativeInput {
 
     /**
      * Registers a controller to be used with mapping
-     * @param device An [InputDevice] or the input overlay wrapped with [YuzuInputDevice]
+     * @param device An [InputDevice] or the input overlay wrapped with [CitronInputDevice]
      */
-    external fun registerController(device: YuzuInputDevice)
+    external fun registerController(device: CitronInputDevice)
 
     /**
      * Gets the names of input devices that have been registered with the input subsystem via [registerController]

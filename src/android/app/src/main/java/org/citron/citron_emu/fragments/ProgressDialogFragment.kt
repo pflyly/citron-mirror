@@ -1,7 +1,7 @@
-// SPDX-FileCopyrightText: 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.fragments
+package org.citron.citron_emu.fragments
 
 import android.app.Dialog
 import android.os.Bundle
@@ -15,11 +15,11 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.yuzu.yuzu_emu.R
-import org.yuzu.yuzu_emu.databinding.DialogProgressBarBinding
-import org.yuzu.yuzu_emu.model.TaskViewModel
-import org.yuzu.yuzu_emu.utils.ViewUtils.setVisible
-import org.yuzu.yuzu_emu.utils.collect
+import org.citron.citron_emu.R
+import org.citron.citron_emu.databinding.DialogProgressBarBinding
+import org.citron.citron_emu.model.TaskViewModel
+import org.citron.citron_emu.utils.ViewUtils.setVisible
+import org.citron.citron_emu.utils.collect
 
 class ProgressDialogFragment : DialogFragment() {
     private val taskViewModel: TaskViewModel by activityViewModels()

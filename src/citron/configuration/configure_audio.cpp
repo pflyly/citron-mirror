@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2018 yuzu Emulator Project
+// SPDX-FileCopyrightText: Copyright 2018 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <map>
@@ -14,11 +14,11 @@
 #include "common/settings_common.h"
 #include "core/core.h"
 #include "ui_configure_audio.h"
-#include "yuzu/configuration/configuration_shared.h"
-#include "yuzu/configuration/configure_audio.h"
-#include "yuzu/configuration/shared_translation.h"
-#include "yuzu/configuration/shared_widget.h"
-#include "yuzu/uisettings.h"
+#include "citron/configuration/configuration_shared.h"
+#include "citron/configuration/configure_audio.h"
+#include "citron/configuration/shared_translation.h"
+#include "citron/configuration/shared_widget.h"
+#include "citron/uisettings.h"
 
 ConfigureAudio::ConfigureAudio(const Core::System& system_,
                                std::shared_ptr<std::vector<ConfigurationShared::Tab*>> group_,

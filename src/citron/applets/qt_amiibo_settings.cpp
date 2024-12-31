@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2022 yuzu Emulator Project
+// SPDX-FileCopyrightText: Copyright 2022 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <algorithm>
@@ -16,8 +16,8 @@
 #ifdef ENABLE_WEB_SERVICE
 #include "web_service/web_backend.h"
 #endif
-#include "yuzu/applets/qt_amiibo_settings.h"
-#include "yuzu/main.h"
+#include "citron/applets/qt_amiibo_settings.h"
+#include "citron/main.h"
 
 QtAmiiboSettingsDialog::QtAmiiboSettingsDialog(QWidget* parent,
                                                Core::Frontend::CabinetParameters parameters_,

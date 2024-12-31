@@ -7,9 +7,9 @@
 #include <vector>
 #include <QDialog>
 #include "configuration/shared_widget.h"
-#include "yuzu/configuration/configuration_shared.h"
-#include "yuzu/configuration/shared_translation.h"
-#include "yuzu/vk_device_info.h"
+#include "citron/configuration/configuration_shared.h"
+#include "citron/configuration/shared_translation.h"
+#include "citron/vk_device_info.h"
 
 namespace Core {
 class System;

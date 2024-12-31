@@ -1,7 +1,7 @@
-// SPDX-FileCopyrightText: 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.fragments
+package org.citron.citron_emu.fragments
 
 import android.Manifest
 import android.content.ActivityNotFoundException
@@ -27,23 +27,23 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.transition.MaterialSharedAxis
-import org.yuzu.yuzu_emu.BuildConfig
-import org.yuzu.yuzu_emu.HomeNavigationDirections
-import org.yuzu.yuzu_emu.NativeLibrary
-import org.yuzu.yuzu_emu.R
-import org.yuzu.yuzu_emu.YuzuApplication
-import org.yuzu.yuzu_emu.adapters.HomeSettingAdapter
-import org.yuzu.yuzu_emu.databinding.FragmentHomeSettingsBinding
-import org.yuzu.yuzu_emu.features.DocumentProvider
-import org.yuzu.yuzu_emu.features.settings.model.Settings
-import org.yuzu.yuzu_emu.model.DriverViewModel
-import org.yuzu.yuzu_emu.model.HomeSetting
-import org.yuzu.yuzu_emu.model.HomeViewModel
-import org.yuzu.yuzu_emu.ui.main.MainActivity
-import org.yuzu.yuzu_emu.utils.FileUtil
-import org.yuzu.yuzu_emu.utils.GpuDriverHelper
-import org.yuzu.yuzu_emu.utils.Log
-import org.yuzu.yuzu_emu.utils.ViewUtils.updateMargins
+import org.citron.citron_emu.BuildConfig
+import org.citron.citron_emu.HomeNavigationDirections
+import org.citron.citron_emu.NativeLibrary
+import org.citron.citron_emu.R
+import org.citron.citron_emu.CitronApplication
+import org.citron.citron_emu.adapters.HomeSettingAdapter
+import org.citron.citron_emu.databinding.FragmentHomeSettingsBinding
+import org.citron.citron_emu.features.DocumentProvider
+import org.citron.citron_emu.features.settings.model.Settings
+import org.citron.citron_emu.model.DriverViewModel
+import org.citron.citron_emu.model.HomeSetting
+import org.citron.citron_emu.model.HomeViewModel
+import org.citron.citron_emu.ui.main.MainActivity
+import org.citron.citron_emu.utils.FileUtil
+import org.citron.citron_emu.utils.GpuDriverHelper
+import org.citron.citron_emu.utils.Log
+import org.citron.citron_emu.utils.ViewUtils.updateMargins
 
 class HomeSettingsFragment : Fragment() {
     private var _binding: FragmentHomeSettingsBinding? = null
@@ -135,8 +135,8 @@ class HomeSettingsFragment : Fragment() {
             )
             add(
                 HomeSetting(
-                    R.string.manage_yuzu_data,
-                    R.string.manage_yuzu_data_description,
+                    R.string.manage_citron_data,
+                    R.string.manage_citron_data_description,
                     R.drawable.ic_install,
                     {
                         binding.root.findNavController()
@@ -180,7 +180,7 @@ class HomeSettingsFragment : Fragment() {
                                 )
                             } else {
                                 val failedNames = result.joinToString("\n")
-                                val errorMessage = YuzuApplication.appContext.getString(
+                                val errorMessage = CitronApplication.appContext.getString(
                                     R.string.verification_failed_for,
                                     failedNames
                                 )
@@ -375,14 +375,14 @@ class HomeSettingsFragment : Fragment() {
             mainActivity,
             DocumentsContract.buildDocumentUri(
                 DocumentProvider.AUTHORITY,
-                "${DocumentProvider.ROOT_ID}/log/yuzu_log.txt"
+                "${DocumentProvider.ROOT_ID}/log/citron_log.txt"
             )
         )!!
         val oldLog = DocumentFile.fromSingleUri(
             mainActivity,
             DocumentsContract.buildDocumentUri(
                 DocumentProvider.AUTHORITY,
-                "${DocumentProvider.ROOT_ID}/log/yuzu_log.txt.old.txt"
+                "${DocumentProvider.ROOT_ID}/log/citron_log.txt.old.txt"
             )
         )!!
 

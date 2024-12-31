@@ -9,8 +9,8 @@
 #include <QStandardItemModel>
 #include <QVariant>
 #include "network/network.h"
-#include "yuzu/multiplayer/chat_room.h"
-#include "yuzu/multiplayer/validation.h"
+#include "citron/multiplayer/chat_room.h"
+#include "citron/multiplayer/validation.h"
 
 namespace Ui {
 class HostRoom;

@@ -1,7 +1,7 @@
-// SPDX-FileCopyrightText: 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.features.settings.ui
+package org.citron.citron_emu.features.settings.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -17,13 +17,13 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialSharedAxis
-import org.yuzu.yuzu_emu.R
-import org.yuzu.yuzu_emu.databinding.FragmentSettingsBinding
-import org.yuzu.yuzu_emu.features.input.NativeInput
-import org.yuzu.yuzu_emu.features.settings.model.Settings
-import org.yuzu.yuzu_emu.fragments.MessageDialogFragment
-import org.yuzu.yuzu_emu.utils.ViewUtils.updateMargins
-import org.yuzu.yuzu_emu.utils.collect
+import org.citron.citron_emu.R
+import org.citron.citron_emu.databinding.FragmentSettingsBinding
+import org.citron.citron_emu.features.input.NativeInput
+import org.citron.citron_emu.features.settings.model.Settings
+import org.citron.citron_emu.fragments.MessageDialogFragment
+import org.citron.citron_emu.utils.ViewUtils.updateMargins
+import org.citron.citron_emu.utils.collect
 
 class SettingsFragment : Fragment() {
     private lateinit var presenter: SettingsFragmentPresenter

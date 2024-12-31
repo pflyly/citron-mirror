@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2023 yuzu Emulator Project
+// SPDX-FileCopyrightText: Copyright 2023 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #pragma once
@@ -11,8 +11,8 @@
 namespace FileSys {
 
 class IntegrityVerificationStorage : public IReadOnlyStorage {
-    YUZU_NON_COPYABLE(IntegrityVerificationStorage);
-    YUZU_NON_MOVEABLE(IntegrityVerificationStorage);
+    CITRON_NON_COPYABLE(IntegrityVerificationStorage);
+    CITRON_NON_MOVEABLE(IntegrityVerificationStorage);
 
 public:
     static constexpr s64 HashSize = 256 / 8;

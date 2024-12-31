@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2020 yuzu Emulator Project
+// SPDX-FileCopyrightText: Copyright 2020 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #pragma once
@@ -6,8 +6,8 @@
 #include <memory>
 #include <vector>
 #include <QWidget>
-#include "yuzu/configuration/configuration_shared.h"
-#include "yuzu/configuration/shared_translation.h"
+#include "citron/configuration/configuration_shared.h"
+#include "citron/configuration/shared_translation.h"
 
 class QComboBox;
 

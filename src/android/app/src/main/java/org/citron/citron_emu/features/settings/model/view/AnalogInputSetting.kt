@@ -1,14 +1,14 @@
-// SPDX-FileCopyrightText: 2024 yuzu Emulator Project
+// SPDX-FileCopyrightText: 2024 yuzu Emulator Project & 2025 citron Homebrew Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-package org.yuzu.yuzu_emu.features.settings.model.view
+package org.citron.citron_emu.features.settings.model.view
 
 import androidx.annotation.StringRes
-import org.yuzu.yuzu_emu.features.input.NativeInput
-import org.yuzu.yuzu_emu.features.input.model.AnalogDirection
-import org.yuzu.yuzu_emu.features.input.model.InputType
-import org.yuzu.yuzu_emu.features.input.model.NativeAnalog
-import org.yuzu.yuzu_emu.utils.ParamPackage
+import org.citron.citron_emu.features.input.NativeInput
+import org.citron.citron_emu.features.input.model.AnalogDirection
+import org.citron.citron_emu.features.input.model.InputType
+import org.citron.citron_emu.features.input.model.NativeAnalog
+import org.citron.citron_emu.utils.ParamPackage
 
 class AnalogInputSetting(
     override val playerIndex: Int,
