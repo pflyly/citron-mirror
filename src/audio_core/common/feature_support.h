@@ -67,6 +67,8 @@ enum class SupportTags {
     AudioSystemRecordVolume,
     AudioSystemAutoMute,
     AudioSystemHearingProtection,
+    AudioCompressorStatistics,
+    AudioVolumeResetSupport,
     Size
 };
 
@@ -131,6 +133,8 @@ constexpr bool CheckFeatureSupported(SupportTags tag, u32 user_revision) {
             {SupportTags::AudioSystemRecordVolume, 4},
             {SupportTags::AudioSystemAutoMute, 13},
             {SupportTags::AudioSystemHearingProtection, 14},
+            {SupportTags::AudioCompressorStatistics, 16},
+            {SupportTags::AudioVolumeResetSupport, 17},
         }};
 
     const auto& feature =
