@@ -718,7 +718,34 @@ void RasterizerVulkan::FlushAndInvalidateRegion(DAddr addr, u64 size,
     if (Settings::IsGPULevelExtreme()) {
         FlushRegion(addr, size, which);
     }
-    InvalidateRegion(addr, size, which);
+
+    // TLB optimization to avoid redundant flushing and potential deadlocks
+    static constexpr size_t TLB_CACHE_SIZE = 128;
+    static std::array<std::pair<DAddr, u64>, TLB_CACHE_SIZE> tlb_cache;
+    static size_t tlb_cache_index = 0;
+    static std::mutex tlb_mutex;
+
+    {
+        std::scoped_lock lock{tlb_mutex};
+        // Check if this region is already in our TLB cache
+        bool found_in_tlb = false;
+        for (const auto& entry : tlb_cache) {
+            if (entry.first <= addr && addr + size <= entry.first + entry.second) {
+                // This region is already in our TLB cache, no need to flush
+                found_in_tlb = true;
+                break;
+            }
+        }
+
+        if (!found_in_tlb) {
+            // Add to TLB cache
+            tlb_cache[tlb_cache_index] = {addr, size};
+            tlb_cache_index = (tlb_cache_index + 1) % TLB_CACHE_SIZE;
+
+            // Proceed with normal invalidation
+            InvalidateRegion(addr, size, which);
+        }
+    }
 }
 
 void RasterizerVulkan::WaitForIdle() {
@@ -848,6 +875,18 @@ void RasterizerVulkan::LoadDiskResources(u64 title_id, std::stop_token stop_load
 void RasterizerVulkan::FlushWork() {
 #ifdef ANDROID
     static constexpr u32 DRAWS_TO_DISPATCH = 1024;
+
+    // Android-specific TLB optimization to prevent deadlocks
+    // This limits the maximum number of outstanding memory operations to avoid TLB thrashing
+    static constexpr u32 MAX_TLB_OPERATIONS = 64;
+    static u32 tlb_operation_counter = 0;
+
+    if (++tlb_operation_counter >= MAX_TLB_OPERATIONS) {
+        // Force a flush to ensure memory operations complete
+        scheduler.Flush();
+        scheduler.WaitIdle();  // Make sure all operations complete to clear TLB state
+        tlb_operation_counter = 0;
+    }
 #else
     static constexpr u32 DRAWS_TO_DISPATCH = 4096;
 #endif // ANDROID
