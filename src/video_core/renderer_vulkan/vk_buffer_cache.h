@@ -1,5 +1,4 @@
 // SPDX-FileCopyrightText: Copyright 2019 yuzu Emulator Project
-// SPDX-FileCopyrightText: Copyright 2025 citron Emulator Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #pragma once
@@ -23,21 +22,6 @@ class Scheduler;
 struct HostVertexBinding;
 
 class BufferCacheRuntime;
-class BufferCacheAccelerator;
-
-struct OverlapResult {
-    bool has_stream_buffer;
-    bool has_written_buffer;
-};
-
-class BufferCacheAccelerator {
-public:
-    OverlapResult CheckRangeOverlaps(DAddr addr, u64 size) {
-        // Simple implementation - assume there are overlaps
-        // This can be expanded with actual buffer tracking if needed
-        return OverlapResult{true, true};
-    }
-};
 
 class Buffer : public VideoCommon::BufferBase {
 public:
@@ -96,7 +80,6 @@ public:
                                 GuestDescriptorQueue& guest_descriptor_queue,
                                 ComputePassDescriptorQueue& compute_pass_descriptor_queue,
                                 DescriptorPool& descriptor_pool);
-    ~BufferCacheRuntime();
 
     void TickFrame(Common::SlotVector<Buffer>& slot_buffers) noexcept;
 
@@ -162,22 +145,6 @@ public:
         guest_descriptor_queue.AddTexelBuffer(buffer.View(offset, size, format));
     }
 
-    /// TLB-aware memory barrier to prevent deadlocks, particularly on Android
-    void InsertTLBBarrier(DAddr addr, u64 size) {
-        // This provides a more precise way to synchronize memory
-        // without causing unnecessary TLB invalidations
-#ifdef ANDROID
-        std::scoped_lock lock{mutex};
-        OverlapResult result = accelerate->CheckRangeOverlaps(addr, size);
-        if (!result.has_stream_buffer && !result.has_written_buffer) {
-            // If no overlap with active memory, skip barrier to maintain TLB entries
-            return;
-        }
-
-        InsertTLBBarrierImpl();
-#endif
-    }
-
 private:
     void BindBuffer(VkBuffer buffer, u32 offset, u32 size) {
         guest_descriptor_queue.AddBuffer(buffer, offset, size);
@@ -185,7 +152,6 @@ private:
 
     void ReserveNullBuffer();
     vk::Buffer CreateNullBuffer();
-    void InsertTLBBarrierImpl();
 
     const Device& device;
     MemoryAllocator& memory_allocator;
@@ -197,9 +163,6 @@ private:
     std::shared_ptr<QuadStripIndexBuffer> quad_strip_index_buffer;
 
     vk::Buffer null_buffer;
-
-    std::mutex mutex;
-    BufferCacheAccelerator* accelerate;
 
     std::unique_ptr<Uint8Pass> uint8_pass;
     QuadIndexedPass quad_index_pass;
