@@ -1,4 +1,5 @@
 // SPDX-FileCopyrightText: Copyright 2018 yuzu Emulator Project
+// SPDX-FileCopyrightText: Copyright 2025 citron Emulator Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <queue>
@@ -28,12 +29,12 @@ public:
             {10102, nullptr, "UpdateFriendInfo"},
             {10110, nullptr, "GetFriendProfileImage"},
             {10120, &IFriendService::CheckFriendListAvailability, "CheckFriendListAvailability"},
-            {10121, nullptr, "EnsureFriendListAvailable"},
+            {10121, &IFriendService::EnsureFriendListAvailable, "EnsureFriendListAvailable"},
             {10200, nullptr, "SendFriendRequestForApplication"},
             {10211, nullptr, "AddFacedFriendRequestForApplication"},
             {10400, &IFriendService::GetBlockedUserListIds, "GetBlockedUserListIds"},
             {10420, &IFriendService::CheckBlockedUserListAvailability, "CheckBlockedUserListAvailability"},
-            {10421, nullptr, "EnsureBlockedUserListAvailable"},
+            {10421, &IFriendService::EnsureBlockedUserListAvailable, "EnsureBlockedUserListAvailable"},
             {10500, nullptr, "GetProfileList"},
             {10600, nullptr, "DeclareOpenOnlinePlaySession"},
             {10601, &IFriendService::DeclareCloseOnlinePlaySession, "DeclareCloseOnlinePlaySession"},
@@ -166,9 +167,25 @@ private:
 
         LOG_WARNING(Service_Friend, "(STUBBED) called, uuid=0x{}", uuid.RawString());
 
+        // Signal the completion event to unblock any waiting threads
+        completion_event->Signal();
+
         IPC::ResponseBuilder rb{ctx, 3};
         rb.Push(ResultSuccess);
         rb.Push(true);
+    }
+
+    void EnsureFriendListAvailable(HLERequestContext& ctx) {
+        IPC::RequestParser rp{ctx};
+        const auto uuid{rp.PopRaw<Common::UUID>()};
+
+        LOG_WARNING(Service_Friend, "(STUBBED) EnsureFriendListAvailable called, uuid=0x{}", uuid.RawString());
+
+        // Signal the completion event to unblock any waiting threads
+        completion_event->Signal();
+
+        IPC::ResponseBuilder rb{ctx, 2};
+        rb.Push(ResultSuccess);
     }
 
     void GetBlockedUserListIds(HLERequestContext& ctx) {
@@ -186,9 +203,43 @@ private:
 
         LOG_WARNING(Service_Friend, "(STUBBED) called, uuid=0x{}", uuid.RawString());
 
+        // Signal the completion event to unblock any waiting threads
+        completion_event->Signal();
+
         IPC::ResponseBuilder rb{ctx, 3};
         rb.Push(ResultSuccess);
         rb.Push(true);
+    }
+
+    void EnsureBlockedUserListAvailable(HLERequestContext& ctx) {
+        IPC::RequestParser rp{ctx};
+        const auto uuid{rp.PopRaw<Common::UUID>()};
+
+        LOG_WARNING(Service_Friend, "(STUBBED) EnsureBlockedUserListAvailable called, uuid=0x{}", uuid.RawString());
+
+        // Signal the completion event to unblock any waiting threads
+        completion_event->Signal();
+
+        IPC::ResponseBuilder rb{ctx, 2};
+        rb.Push(ResultSuccess);
+    }
+
+    void GetReceivedFriendInvitationCountCache(HLERequestContext& ctx) {
+        LOG_DEBUG(Service_Friend, "(STUBBED) called, check in out");
+
+        IPC::ResponseBuilder rb{ctx, 3};
+        rb.Push(ResultSuccess);
+        rb.Push(0); // Zero invitations
+    }
+
+    void Cancel(HLERequestContext& ctx) {
+        LOG_WARNING(Service_Friend, "Cancel called - returning immediately");
+
+        // Signal the completion event to unblock any waiting threads
+        completion_event->Signal();
+
+        IPC::ResponseBuilder rb{ctx, 2};
+        rb.Push(ResultSuccess);
     }
 
     void DeclareCloseOnlinePlaySession(HLERequestContext& ctx) {
@@ -248,14 +299,6 @@ private:
         rb.Push(ResultSuccess);
     }
 
-    void GetReceivedFriendInvitationCountCache(HLERequestContext& ctx) {
-        LOG_DEBUG(Service_Friend, "(STUBBED) called, check in out");
-
-        IPC::ResponseBuilder rb{ctx, 3};
-        rb.Push(ResultSuccess);
-        rb.Push(0);
-    }
-
     KernelHelpers::ServiceContext service_context;
 
     Kernel::KEvent* completion_event;
@@ -286,6 +329,9 @@ public:
 private:
     void GetEvent(HLERequestContext& ctx) {
         LOG_DEBUG(Service_Friend, "called");
+
+        // Signal the notification event to unblock any waiting threads
+        notification_event->Signal();
 
         IPC::ResponseBuilder rb{ctx, 2, 1};
         rb.Push(ResultSuccess);
@@ -363,10 +409,11 @@ private:
 };
 
 void Module::Interface::CreateFriendService(HLERequestContext& ctx) {
+    LOG_DEBUG(Service_Friend, "CreateFriendService called");
+
     IPC::ResponseBuilder rb{ctx, 2, 0, 1};
     rb.Push(ResultSuccess);
     rb.PushIpcInterface<IFriendService>(system);
-    LOG_DEBUG(Service_Friend, "called");
 }
 
 void Module::Interface::CreateNotificationService(HLERequestContext& ctx) {

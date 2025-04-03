@@ -369,6 +369,9 @@ void RasterizerVulkan::Clear(u32 layer_count) {
         return;
     }
 
+    // Only log the clear depth value - there's no depth or stencil members in ClearSurface
+    LOG_INFO(Render_Vulkan, "Clear depth value: {}", regs.clear_depth);
+
     std::scoped_lock lock{texture_cache.mutex};
     texture_cache.UpdateRenderTargets(true);
     const Framebuffer* const framebuffer = texture_cache.GetFramebuffer();
@@ -974,7 +977,8 @@ void RasterizerVulkan::UpdateDynamicStates() {
                     bool hasFloat = std::any_of(
                         regs.vertex_attrib_format.begin(), regs.vertex_attrib_format.end(),
                         [](const auto& attrib) {
-                            return attrib.type == Tegra::Engines::Maxwell3D::Regs::VertexAttribute::Type::Float;
+                            return attrib.type ==
+                                   Tegra::Engines::Maxwell3D::Regs::VertexAttribute::Type::Float;
                         });
 
                     // For AMD drivers, disable logic_op if a float attribute is present.
@@ -1286,8 +1290,33 @@ void RasterizerVulkan::UpdateDepthWriteEnable(Tegra::Engines::Maxwell3D::Regs& r
     if (!state_tracker.TouchDepthWriteEnable()) {
         return;
     }
-    scheduler.Record([enable = regs.depth_write_enabled](vk::CommandBuffer cmdbuf) {
-        cmdbuf.SetDepthWriteEnableEXT(enable);
+
+    // Check if we're likely in a reversed depth scenario (clear depth near 0)
+    const bool likely_reversed_depth = (regs.clear_depth < 0.5f);
+
+    // Get the original depth write enable state
+    bool depth_write_enable = regs.depth_write_enabled != 0;
+    bool modified = false;
+
+    // Only force enable depth writes when:
+    // 1. We're using reversed depth (clear_depth < 0.5)
+    // 2. Depth testing is enabled
+    // 3. Original depth writes are disabled
+    // This selectively fixes the issue without affecting other games
+    if (likely_reversed_depth && regs.depth_test_enable && !depth_write_enable) {
+        depth_write_enable = true;
+        modified = true;
+        LOG_INFO(Render_Vulkan, "Reversed depth buffer with disabled depth writes detected, "
+                                "enabling depth writes for improved visibility");
+    }
+
+    // Log when depth write is being modified
+    LOG_INFO(Render_Vulkan, "Depth write set to: {} ({}){}",
+             depth_write_enable ? "enabled" : "disabled", regs.depth_write_enabled ? "1" : "0",
+             modified ? " -> modified" : "");
+
+    scheduler.Record([depth_write_enable](vk::CommandBuffer cmdbuf) {
+        cmdbuf.SetDepthWriteEnableEXT(depth_write_enable);
     });
 }
 
@@ -1371,7 +1400,27 @@ void RasterizerVulkan::UpdateDepthCompareOp(Tegra::Engines::Maxwell3D::Regs& reg
     if (!state_tracker.TouchDepthCompareOp()) {
         return;
     }
-    scheduler.Record([func = regs.depth_test_func](vk::CommandBuffer cmdbuf) {
+
+    // Get the original depth comparison function requested by the game
+    auto original_func = regs.depth_test_func;
+    auto func_to_use = original_func;
+
+    // Check for clear depth - we'll use this to determine how to handle depth
+    const bool likely_reversed_depth = (regs.clear_depth < 0.5f);
+
+    // For reversed depth (clear_depth near 0), ALWAYS use GREATER_OR_EQUAL
+    // For normal depth (clear_depth near 1), ALWAYS use LESS_OR_EQUAL
+    if (likely_reversed_depth) {
+        func_to_use =
+            Maxwell::ComparisonOp::GreaterEqual_GL; // Maxwell::ComparisonOp::GreaterEqual_GL;
+        LOG_INFO(Render_Vulkan,
+                 "Reversed depth buffer detected, using GREATER_OR_EQUAL for improved visibility");
+    } else {
+        func_to_use = regs.depth_test_func;
+    }
+
+    // Use the modified depth comparison function
+    scheduler.Record([func = func_to_use](vk::CommandBuffer cmdbuf) {
         cmdbuf.SetDepthCompareOpEXT(MaxwellToVK::ComparisonOp(func));
     });
 }
@@ -1476,13 +1525,38 @@ void RasterizerVulkan::UpdateBlending(Tegra::Engines::Maxwell3D::Regs& regs) {
         std::array<VkColorBlendEquationEXT, Maxwell::NumRenderTargets> setup_blends{};
         for (size_t index = 0; index < Maxwell::NumRenderTargets; index++) {
             const auto blend_setup = [&]<typename T>(const T& guest_blend) {
+                // Check if we're likely in a reversed depth scenario (clear depth near 0),
+                // which would indicate we're in Civilization 7 where models have transparency
+                // issues
+                const bool likely_reversed_depth = (regs.clear_depth < 0.5f);
+
                 auto& host_blend = setup_blends[index];
-                host_blend.srcColorBlendFactor = MaxwellToVK::BlendFactor(guest_blend.color_source);
-                host_blend.dstColorBlendFactor = MaxwellToVK::BlendFactor(guest_blend.color_dest);
-                host_blend.colorBlendOp = MaxwellToVK::BlendEquation(guest_blend.color_op);
-                host_blend.srcAlphaBlendFactor = MaxwellToVK::BlendFactor(guest_blend.alpha_source);
-                host_blend.dstAlphaBlendFactor = MaxwellToVK::BlendFactor(guest_blend.alpha_dest);
-                host_blend.alphaBlendOp = MaxwellToVK::BlendEquation(guest_blend.alpha_op);
+
+                if (likely_reversed_depth) {
+                    // For reversed depth scenarios (likely Civilization 7), force ONE/ZERO blend
+                    // factors to ensure models render as fully opaque
+                    host_blend.srcColorBlendFactor =
+                        MaxwellToVK::BlendFactor(guest_blend.color_source);
+                    host_blend.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+                    host_blend.colorBlendOp = MaxwellToVK::BlendEquation(guest_blend.color_op);
+                    host_blend.srcAlphaBlendFactor =
+                        MaxwellToVK::BlendFactor(guest_blend.alpha_source);
+                    host_blend.dstAlphaBlendFactor =
+                        MaxwellToVK::BlendFactor(guest_blend.alpha_dest);
+                    host_blend.alphaBlendOp = MaxwellToVK::BlendEquation(guest_blend.alpha_op);
+                } else {
+                    // For normal depth scenarios, use the game's requested blend factors
+                    host_blend.srcColorBlendFactor =
+                        MaxwellToVK::BlendFactor(guest_blend.color_source);
+                    host_blend.dstColorBlendFactor =
+                        MaxwellToVK::BlendFactor(guest_blend.color_dest);
+                    host_blend.colorBlendOp = MaxwellToVK::BlendEquation(guest_blend.color_op);
+                    host_blend.srcAlphaBlendFactor =
+                        MaxwellToVK::BlendFactor(guest_blend.alpha_source);
+                    host_blend.dstAlphaBlendFactor =
+                        MaxwellToVK::BlendFactor(guest_blend.alpha_dest);
+                    host_blend.alphaBlendOp = MaxwellToVK::BlendEquation(guest_blend.alpha_op);
+                }
             };
             if (!regs.blend_per_target_enabled) {
                 blend_setup(regs.blend);
