@@ -198,7 +198,9 @@ struct Values {
                                                              MemoryLayout::Memory_4Gb,
                                                              MemoryLayout::Memory_12Gb,
                                                              "memory_layout_mode",
-                                                             Category::Core};
+                                                             Category::Core,
+                                                             Specialization::Default,
+                                                             false};
     SwitchableSetting<bool> use_speed_limit{
         linkage, true, "use_speed_limit", Category::Core, Specialization::Paired, false, true};
     SwitchableSetting<u16, true> speed_limit{linkage,
@@ -211,6 +213,11 @@ struct Values {
                                              true,
                                              true,
                                              &use_speed_limit};
+    SwitchableSetting<bool> use_nce{linkage, true, "use_nce", Category::Core};
+
+    // Memory
+    SwitchableSetting<bool> use_gpu_memory_manager{linkage, false, "use_gpu_memory_manager", Category::Core};
+    SwitchableSetting<bool> enable_memory_snapshots{linkage, false, "enable_memory_snapshots", Category::Core};
 
     // Cpu
     SwitchableSetting<CpuBackend, true> cpu_backend{linkage,
