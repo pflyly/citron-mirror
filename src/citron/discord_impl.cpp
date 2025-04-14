@@ -36,7 +36,7 @@ system_
 DiscordEventHandlers handlers {};
 // The number is the client ID for citron, it's used for images and the
 // application name
-Discord_Initialize("1322413013248118888", & handlers, 1, nullptr);
+Discord_Initialize("1361252452329848892", & handlers, 1, nullptr);
 }
 
 DiscordImpl::~DiscordImpl() {
