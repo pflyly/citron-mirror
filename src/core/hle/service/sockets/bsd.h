@@ -1,4 +1,5 @@
 // SPDX-FileCopyrightText: Copyright 2018 yuzu Emulator Project
+// SPDX-FileCopyrightText: Copyright 2025 citron Emulator Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #pragma once
@@ -124,11 +125,30 @@ private:
         Errno bsd_errno{};
     };
 
+    struct LibraryConfigData {
+        u32 version;
+        u32 tcp_tx_buf_size;
+        u32 tcp_rx_buf_size;
+        u32 tcp_tx_buf_max_size;
+        u32 tcp_rx_buf_max_size;
+        u32 udp_tx_buf_size;
+        u32 udp_rx_buf_size;
+        u32 sb_efficiency;
+    };
+
+    // This is nn::socket::sf::IClient
     void RegisterClient(HLERequestContext& ctx);
     void StartMonitoring(HLERequestContext& ctx);
     void Socket(HLERequestContext& ctx);
+    void SocketExempt(HLERequestContext& ctx);
+    void Open(HLERequestContext& ctx);
     void Select(HLERequestContext& ctx);
     void Poll(HLERequestContext& ctx);
+    void Sysctl(HLERequestContext& ctx);
+    void Recv(HLERequestContext& ctx);
+    void RecvFrom(HLERequestContext& ctx);
+    void Send(HLERequestContext& ctx);
+    void SendTo(HLERequestContext& ctx);
     void Accept(HLERequestContext& ctx);
     void Bind(HLERequestContext& ctx);
     void Connect(HLERequestContext& ctx);
@@ -136,18 +156,25 @@ private:
     void GetSockName(HLERequestContext& ctx);
     void GetSockOpt(HLERequestContext& ctx);
     void Listen(HLERequestContext& ctx);
+    void Ioctl(HLERequestContext& ctx);
     void Fcntl(HLERequestContext& ctx);
     void SetSockOpt(HLERequestContext& ctx);
     void Shutdown(HLERequestContext& ctx);
-    void Recv(HLERequestContext& ctx);
-    void RecvFrom(HLERequestContext& ctx);
-    void Send(HLERequestContext& ctx);
-    void SendTo(HLERequestContext& ctx);
+    void ShutdownAllSockets(HLERequestContext& ctx);
     void Write(HLERequestContext& ctx);
     void Read(HLERequestContext& ctx);
     void Close(HLERequestContext& ctx);
     void DuplicateSocket(HLERequestContext& ctx);
+    void GetResourceStatistics(HLERequestContext& ctx);
+    void RecvMMsg(HLERequestContext& ctx);
+    void SendMMsg(HLERequestContext& ctx);
     void EventFd(HLERequestContext& ctx);
+    void RegisterResourceStatisticsName(HLERequestContext& ctx);
+    void RegisterClientShared(HLERequestContext& ctx);
+    void GetSocketStatistics(HLERequestContext& ctx);
+    void NifIoctl(HLERequestContext& ctx);
+    void SetThreadCoreMask(HLERequestContext& ctx);
+    void GetThreadCoreMask(HLERequestContext& ctx);
 
     template <typename Work>
     void ExecuteWork(HLERequestContext& ctx, Work work);
@@ -171,30 +198,23 @@ private:
     std::pair<s32, Errno> SendImpl(s32 fd, u32 flags, std::span<const u8> message);
     std::pair<s32, Errno> SendToImpl(s32 fd, u32 flags, std::span<const u8> message,
                                      std::span<const u8> addr);
-
     s32 FindFreeFileDescriptorHandle() noexcept;
     bool IsFileDescriptorValid(s32 fd) const noexcept;
 
     void BuildErrnoResponse(HLERequestContext& ctx, Errno bsd_errno) const noexcept;
 
-    std::array<std::optional<FileDescriptor>, MAX_FD> file_descriptors;
-
-    Network::RoomNetwork& room_network;
-
-    /// Callback to parse and handle a received wifi packet.
     void OnProxyPacketReceived(const Network::ProxyPacket& packet);
 
-    // Callback identifier for the OnProxyPacketReceived event.
     Network::RoomMember::CallbackHandle<Network::ProxyPacket> proxy_packet_received;
+
+    /// Mapping of file descriptors to sockets
+    std::array<std::optional<FileDescriptor>, MAX_FD> file_descriptors{};
+
+    /// Mutex to protect file descriptor operations
+    std::mutex mutex;
 
 protected:
     virtual std::unique_lock<std::mutex> LockService() override;
-};
-
-class BSDCFG final : public ServiceFramework<BSDCFG> {
-public:
-    explicit BSDCFG(Core::System& system_);
-    ~BSDCFG() override;
 };
 
 } // namespace Service::Sockets

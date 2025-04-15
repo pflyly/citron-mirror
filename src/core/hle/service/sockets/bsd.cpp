@@ -1,4 +1,5 @@
 // SPDX-FileCopyrightText: Copyright 2018 yuzu Emulator Project
+// SPDX-FileCopyrightText: Copyright 2025 citron Emulator Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <array>
@@ -479,6 +480,122 @@ void BSD::EventFd(HLERequestContext& ctx) {
     BuildErrnoResponse(ctx, Errno::SUCCESS);
 }
 
+void BSD::Sysctl(HLERequestContext& ctx) {
+    LOG_WARNING(Service, "(STUBBED) called");
+    IPC::ResponseBuilder rb{ctx, 3};
+    rb.Push(ResultSuccess);
+    // Return an error if not implemented
+    rb.Push<s32>(-1);
+    rb.PushEnum(Errno::INVAL);
+}
+
+void BSD::Ioctl(HLERequestContext& ctx) {
+    LOG_WARNING(Service, "(STUBBED) called");
+    IPC::ResponseBuilder rb{ctx, 3};
+    rb.Push(ResultSuccess);
+    // Return an error if not implemented
+    rb.Push<s32>(-1);
+    rb.PushEnum(Errno::INVAL);
+}
+
+void BSD::ShutdownAllSockets(HLERequestContext& ctx) {
+    LOG_WARNING(Service, "(STUBBED) called");
+    IPC::ResponseBuilder rb{ctx, 3};
+    rb.Push(ResultSuccess);
+    rb.Push<s32>(0);
+    rb.PushEnum(Errno::SUCCESS);
+}
+
+void BSD::GetResourceStatistics(HLERequestContext& ctx) {
+    LOG_WARNING(Service, "(STUBBED) called");
+    IPC::ResponseBuilder rb{ctx, 3};
+    rb.Push(ResultSuccess);
+    rb.Push<s32>(0);
+    rb.PushEnum(Errno::SUCCESS);
+}
+
+void BSD::RecvMMsg(HLERequestContext& ctx) {
+    LOG_WARNING(Service, "(STUBBED) called");
+    IPC::ResponseBuilder rb{ctx, 3};
+    rb.Push(ResultSuccess);
+    // Return an error if not implemented
+    rb.Push<s32>(-1);
+    rb.PushEnum(Errno::INVAL);
+}
+
+void BSD::SendMMsg(HLERequestContext& ctx) {
+    LOG_WARNING(Service, "(STUBBED) called");
+    IPC::ResponseBuilder rb{ctx, 3};
+    rb.Push(ResultSuccess);
+    // Return an error if not implemented
+    rb.Push<s32>(-1);
+    rb.PushEnum(Errno::INVAL);
+}
+
+void BSD::RegisterResourceStatisticsName(HLERequestContext& ctx) {
+    LOG_WARNING(Service, "(STUBBED) called");
+    IPC::ResponseBuilder rb{ctx, 2};
+    rb.Push(ResultSuccess);
+}
+
+void BSD::RegisterClientShared(HLERequestContext& ctx) {
+    LOG_WARNING(Service, "(STUBBED) called");
+    IPC::ResponseBuilder rb{ctx, 2};
+    rb.Push(ResultSuccess);
+}
+
+void BSD::GetSocketStatistics(HLERequestContext& ctx) {
+    LOG_WARNING(Service, "(STUBBED) called");
+    IPC::ResponseBuilder rb{ctx, 3};
+    rb.Push(ResultSuccess);
+    rb.Push<s32>(0);
+    rb.PushEnum(Errno::SUCCESS);
+}
+
+void BSD::NifIoctl(HLERequestContext& ctx) {
+    LOG_WARNING(Service, "(STUBBED) called");
+    IPC::ResponseBuilder rb{ctx, 3};
+    rb.Push(ResultSuccess);
+    // Return an error if not implemented
+    rb.Push<s32>(-1);
+    rb.PushEnum(Errno::INVAL);
+}
+
+void BSD::SetThreadCoreMask(HLERequestContext& ctx) {
+    LOG_WARNING(Service, "(STUBBED) called");
+    IPC::ResponseBuilder rb{ctx, 2};
+    rb.Push(ResultSuccess);
+}
+
+void BSD::GetThreadCoreMask(HLERequestContext& ctx) {
+    LOG_WARNING(Service, "(STUBBED) called");
+    IPC::ResponseBuilder rb{ctx, 2};
+    rb.Push(ResultSuccess);
+}
+
+void BSD::SocketExempt(HLERequestContext& ctx) {
+    IPC::RequestParser rp{ctx};
+    const u32 domain = rp.Pop<u32>();
+    const u32 type = rp.Pop<u32>();
+    const u32 protocol = rp.Pop<u32>();
+
+    LOG_WARNING(Service, "(STUBBED) called - domain={} type={} protocol={}", domain, type, protocol);
+
+    IPC::ResponseBuilder rb{ctx, 3};
+    rb.Push(ResultSuccess);
+    rb.Push<s32>(-1); // Return -1 on exempted socket
+    rb.PushEnum(Errno::SUCCESS);
+}
+
+void BSD::Open(HLERequestContext& ctx) {
+    LOG_WARNING(Service, "(STUBBED) called");
+    IPC::ResponseBuilder rb{ctx, 3};
+    rb.Push(ResultSuccess);
+    // Return an error if not implemented
+    rb.Push<s32>(-1);
+    rb.PushEnum(Errno::INVAL);
+}
+
 template <typename Work>
 void BSD::ExecuteWork(HLERequestContext& ctx, Work work) {
     work.Execute(this);
@@ -508,9 +625,9 @@ std::pair<s32, Errno> BSD::SocketImpl(Domain domain, Type type, Protocol protoco
 
     LOG_INFO(Service, "New socket fd={}", fd);
 
-    auto room_member = room_network.GetRoomMember().lock();
+    auto room_member = system.GetRoomNetwork().GetRoomMember().lock();
     if (room_member && room_member->IsConnected()) {
-        descriptor.socket = std::make_shared<Network::ProxySocket>(room_network);
+        descriptor.socket = std::make_shared<Network::ProxySocket>(system.GetRoomNetwork());
     } else {
         descriptor.socket = std::make_shared<Network::Socket>();
     }
@@ -970,17 +1087,17 @@ void BSD::OnProxyPacketReceived(const Network::ProxyPacket& packet) {
 }
 
 BSD::BSD(Core::System& system_, const char* name)
-    : ServiceFramework{system_, name}, room_network{system_.GetRoomNetwork()} {
+    : ServiceFramework{system_, name} {
     // clang-format off
     static const FunctionInfo functions[] = {
         {0, &BSD::RegisterClient, "RegisterClient"},
         {1, &BSD::StartMonitoring, "StartMonitoring"},
         {2, &BSD::Socket, "Socket"},
-        {3, nullptr, "SocketExempt"},
-        {4, nullptr, "Open"},
+        {3, &BSD::SocketExempt, "SocketExempt"},
+        {4, &BSD::Open, "Open"},
         {5, &BSD::Select, "Select"},
         {6, &BSD::Poll, "Poll"},
-        {7, nullptr, "Sysctl"},
+        {7, &BSD::Sysctl, "Sysctl"},
         {8, &BSD::Recv, "Recv"},
         {9, &BSD::RecvFrom, "RecvFrom"},
         {10, &BSD::Send, "Send"},
@@ -992,27 +1109,32 @@ BSD::BSD(Core::System& system_, const char* name)
         {16, &BSD::GetSockName, "GetSockName"},
         {17, &BSD::GetSockOpt, "GetSockOpt"},
         {18, &BSD::Listen, "Listen"},
-        {19, nullptr, "Ioctl"},
+        {19, &BSD::Ioctl, "Ioctl"},
         {20, &BSD::Fcntl, "Fcntl"},
         {21, &BSD::SetSockOpt, "SetSockOpt"},
         {22, &BSD::Shutdown, "Shutdown"},
-        {23, nullptr, "ShutdownAllSockets"},
+        {23, &BSD::ShutdownAllSockets, "ShutdownAllSockets"},
         {24, &BSD::Write, "Write"},
         {25, &BSD::Read, "Read"},
         {26, &BSD::Close, "Close"},
         {27, &BSD::DuplicateSocket, "DuplicateSocket"},
-        {28, nullptr, "GetResourceStatistics"},
-        {29, nullptr, "RecvMMsg"},
-        {30, nullptr, "SendMMsg"},
+        {28, &BSD::GetResourceStatistics, "GetResourceStatistics"},
+        {29, &BSD::RecvMMsg, "RecvMMsg"},
+        {30, &BSD::SendMMsg, "SendMMsg"},
         {31, &BSD::EventFd, "EventFd"},
-        {32, nullptr, "RegisterResourceStatisticsName"},
-        {33, nullptr, "Initialize2"},
+        {32, &BSD::RegisterResourceStatisticsName, "RegisterResourceStatisticsName"},
+        {33, &BSD::RegisterClientShared, "RegisterClientShared"},
+        {34, &BSD::GetSocketStatistics, "GetSocketStatistics"},
+        {35, &BSD::NifIoctl, "NifIoctl"},
+        {200, &BSD::SetThreadCoreMask, "SetThreadCoreMask"},
+        {201, &BSD::GetThreadCoreMask, "GetThreadCoreMask"},
     };
     // clang-format on
 
     RegisterHandlers(functions);
 
-    if (auto room_member = room_network.GetRoomMember().lock()) {
+    auto room_member = system.GetRoomNetwork().GetRoomMember().lock();
+    if (room_member) {
         proxy_packet_received = room_member->BindOnProxyPacketReceived(
             [this](const Network::ProxyPacket& packet) { OnProxyPacketReceived(packet); });
     } else {
@@ -1021,7 +1143,8 @@ BSD::BSD(Core::System& system_, const char* name)
 }
 
 BSD::~BSD() {
-    if (auto room_member = room_network.GetRoomMember().lock()) {
+    auto room_member = system.GetRoomNetwork().GetRoomMember().lock();
+    if (room_member) {
         room_member->Unbind(proxy_packet_received);
     }
 }
@@ -1030,32 +1153,5 @@ std::unique_lock<std::mutex> BSD::LockService() {
     // Do not lock socket IClient instances.
     return {};
 }
-
-BSDCFG::BSDCFG(Core::System& system_) : ServiceFramework{system_, "bsdcfg"} {
-    // clang-format off
-    static const FunctionInfo functions[] = {
-        {0, nullptr, "SetIfUp"},
-        {1, nullptr, "SetIfUpWithEvent"},
-        {2, nullptr, "CancelIf"},
-        {3, nullptr, "SetIfDown"},
-        {4, nullptr, "GetIfState"},
-        {5, nullptr, "DhcpRenew"},
-        {6, nullptr, "AddStaticArpEntry"},
-        {7, nullptr, "RemoveArpEntry"},
-        {8, nullptr, "LookupArpEntry"},
-        {9, nullptr, "LookupArpEntry2"},
-        {10, nullptr, "ClearArpEntries"},
-        {11, nullptr, "ClearArpEntries2"},
-        {12, nullptr, "PrintArpEntries"},
-        {13, nullptr, "Unknown13"},
-        {14, nullptr, "Unknown14"},
-        {15, nullptr, "Unknown15"},
-    };
-    // clang-format on
-
-    RegisterHandlers(functions);
-}
-
-BSDCFG::~BSDCFG() = default;
 
 } // namespace Service::Sockets
