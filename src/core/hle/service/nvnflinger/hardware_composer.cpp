@@ -1,9 +1,11 @@
 // SPDX-FileCopyrightText: Copyright 2024 yuzu Emulator Project
+// SPDX-FileCopyrightText: Copyright 2025 citron Emulator Project
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include <boost/container/small_vector.hpp>
 
 #include "common/microprofile.h"
+#include "common/settings.h"
 #include "core/hle/service/nvdrv/devices/nvdisp_disp0.h"
 #include "core/hle/service/nvnflinger/buffer_item.h"
 #include "core/hle/service/nvnflinger/buffer_item_consumer.h"
@@ -17,6 +19,14 @@ namespace {
 
 s32 NormalizeSwapInterval(f32* out_speed_scale, s32 swap_interval) {
     if (swap_interval <= 0) {
+        // If swap_interval is 0 and setting enabled, respect it as unlocked FPS
+        if (swap_interval == 0 && Settings::values.respect_present_interval_zero.GetValue()) {
+            if (out_speed_scale) {
+                *out_speed_scale = 1.0f;
+            }
+            return 0;
+        }
+
         // As an extension, treat nonpositive swap interval as speed multiplier.
         if (out_speed_scale) {
             *out_speed_scale = 2.f * static_cast<f32>(1 - swap_interval);

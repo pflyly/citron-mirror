@@ -284,6 +284,8 @@ struct Values {
                                                   Category::Renderer};
     SwitchableSetting<bool> use_asynchronous_gpu_emulation{
         linkage, true, "use_asynchronous_gpu_emulation", Category::Renderer};
+    SwitchableSetting<bool> respect_present_interval_zero{
+        linkage, false, "respect_present_interval_zero", Category::Renderer};
     SwitchableSetting<AstcDecodeMode, true> accelerate_astc{linkage,
 #ifdef ANDROID
                                                             AstcDecodeMode::Cpu,
