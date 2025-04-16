@@ -199,6 +199,7 @@ struct Values {
                                                              MemoryLayout::Memory_12Gb,
                                                              "memory_layout_mode",
                                                              Category::Core};
+    SwitchableSetting<u32> cpu_clock_rate{linkage, 1'020'000'000, "cpu_clock_rate", Category::Cpu};
     SwitchableSetting<bool> use_speed_limit{
         linkage, true, "use_speed_limit", Category::Core, Specialization::Paired, false, true};
     SwitchableSetting<u16, true> speed_limit{linkage,

@@ -9,12 +9,13 @@
 
 #include "common/bit_util.h"
 #include "common/common_types.h"
+#include "common/settings.h"
 
 namespace Core {
 
 namespace Hardware {
 
-constexpr u64 BASE_CLOCK_RATE = 1'020'000'000; // Default CPU Frequency = 1020 MHz
+inline u64 BASE_CLOCK_RATE() { return Settings::values.cpu_clock_rate.GetValue(); } // Default CPU Frequency set in settings, defaults to 1020 MHz
 constexpr u64 CNTFREQ = 19'200'000;            // CNTPCT_EL0 Frequency = 19.2 MHz
 constexpr u32 NUM_CPU_CORES = 4;               // Number of CPU Cores
 

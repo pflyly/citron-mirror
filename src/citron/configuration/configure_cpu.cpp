@@ -1,10 +1,13 @@
 // SPDX-FileCopyrightText: Copyright 2020 yuzu Emulator Project
+// SPDX-FileCopyrightText: Copyright 2025 citron Emulator Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <memory>
 #include <typeinfo>
 #include <vector>
 #include <QComboBox>
+#include <QSpinBox>
+#include <QSlider>
 #include "common/common_types.h"
 #include "common/settings.h"
 #include "common/settings_enums.h"
@@ -38,7 +41,22 @@ ConfigureCpu::ConfigureCpu(const Core::System& system_,
 
 ConfigureCpu::~ConfigureCpu() = default;
 
-void ConfigureCpu::SetConfiguration() {}
+void ConfigureCpu::SetConfiguration() {
+    // Set clock rate values from settings
+    const u32 clock_rate_mhz = Settings::values.cpu_clock_rate.GetValue() / 1'000'000;
+    ui->clock_rate_slider->setValue(static_cast<int>(clock_rate_mhz));
+    ui->clock_rate_spinbox->setValue(static_cast<int>(clock_rate_mhz));
+
+    // Connect slider and spinbox signals to keep them in sync
+    connect(ui->clock_rate_slider, &QSlider::valueChanged, this, [this](int value) {
+        ui->clock_rate_spinbox->setValue(value);
+    });
+
+    connect(ui->clock_rate_spinbox, QOverload<int>::of(&QSpinBox::valueChanged), this, [this](int value) {
+        ui->clock_rate_slider->setValue(value);
+    });
+}
+
 void ConfigureCpu::Setup(const ConfigurationShared::Builder& builder) {
     auto* accuracy_layout = ui->widget_accuracy->layout();
     auto* backend_layout = ui->widget_backend->layout();
@@ -99,6 +117,9 @@ void ConfigureCpu::ApplyConfiguration() {
     for (const auto& apply_func : apply_funcs) {
         apply_func(is_powered_on);
     }
+
+    // Save the clock rate setting (convert from MHz to Hz)
+    Settings::values.cpu_clock_rate = static_cast<u32>(ui->clock_rate_spinbox->value()) * 1'000'000;
 }
 
 void ConfigureCpu::changeEvent(QEvent* event) {

@@ -1,4 +1,5 @@
 // SPDX-FileCopyrightText: Copyright 2019 yuzu Emulator Project
+// SPDX-FileCopyrightText: Copyright 2025 citron Emulator Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <algorithm>
@@ -81,8 +82,8 @@ PerformanceConfiguration Controller::GetCurrentPerformanceConfiguration(Performa
 
 void Controller::SetClockSpeed(u32 mhz) {
     LOG_DEBUG(Service_APM, "called, mhz={:08X}", mhz);
-    // TODO(DarkLordZach): Actually signal core_timing to change clock speed.
-    // TODO(Rodrigo): Remove [[maybe_unused]] when core_timing is used.
+    // Update the clock rate setting with the provided MHz value (convert to Hz)
+    Settings::values.cpu_clock_rate = mhz * 1'000'000;
 }
 
 } // namespace Service::APM

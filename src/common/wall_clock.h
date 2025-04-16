@@ -1,4 +1,5 @@
 // SPDX-FileCopyrightText: Copyright 2020 yuzu Emulator Project
+// SPDX-FileCopyrightText: Copyright 2025 citron Emulator Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #pragma once
@@ -8,6 +9,7 @@
 #include <ratio>
 
 #include "common/common_types.h"
+#include "core/hardware_properties.h"
 
 namespace Common {
 
@@ -15,7 +17,10 @@ class WallClock {
 public:
     static constexpr u64 CNTFRQ = 19'200'000;         // CNTPCT_EL0 Frequency = 19.2 MHz
     static constexpr u64 GPUTickFreq = 614'400'000;   // GM20B GPU Tick Frequency = 614.4 MHz
-    static constexpr u64 CPUTickFreq = 1'020'000'000; // T210/4 A57 CPU Tick Frequency = 1020.0 MHz
+    // Changed from constexpr to function to get dynamic value from settings
+    static inline u64 CPUTickFreq() {
+        return Core::Hardware::BASE_CLOCK_RATE();
+    } // T210/4 A57 CPU Tick Frequency from settings
 
     virtual ~WallClock() = default;
 
@@ -76,12 +81,28 @@ protected:
     using NsToCNTPCTRatio = std::ratio<CNTFRQ, std::nano::den>;
     using NsToGPUTickRatio = std::ratio<GPUTickFreq, std::nano::den>;
 
-    // Cycle Timing
+    // Cycle Timing - using functions for dynamic values
 
-    using CPUTickToNsRatio = std::ratio<std::nano::den, CPUTickFreq>;
-    using CPUTickToUsRatio = std::ratio<std::micro::den, CPUTickFreq>;
-    using CPUTickToCNTPCTRatio = std::ratio<CNTFRQ, CPUTickFreq>;
-    using CPUTickToGPUTickRatio = std::ratio<GPUTickFreq, CPUTickFreq>;
+    // Update these to use functions instead of constexpr
+    struct CPUTickToNsRatio {
+        static inline std::intmax_t num = std::nano::den;
+        static inline std::intmax_t den = CPUTickFreq();
+    };
+
+    struct CPUTickToUsRatio {
+        static inline std::intmax_t num = std::micro::den;
+        static inline std::intmax_t den = CPUTickFreq();
+    };
+
+    struct CPUTickToCNTPCTRatio {
+        static inline std::intmax_t num = CNTFRQ;
+        static inline std::intmax_t den = CPUTickFreq();
+    };
+
+    struct CPUTickToGPUTickRatio {
+        static inline std::intmax_t num = GPUTickFreq;
+        static inline std::intmax_t den = CPUTickFreq();
+    };
 };
 
 std::unique_ptr<WallClock> CreateOptimalClock();
