@@ -1,4 +1,5 @@
 // SPDX-FileCopyrightText: 2014 Citra Emulator Project
+// SPDX-FileCopyrightText: 2025 citron Emulator Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <algorithm>
@@ -89,6 +90,7 @@ bool ParseFilterRule(Filter& instance, Iterator begin, Iterator end) {
     SUB(Service, BGTC)                                                                             \
     SUB(Service, BTDRV)                                                                            \
     SUB(Service, BTM)                                                                              \
+    SUB(Service, BSD)                                                                              \
     SUB(Service, Capture)                                                                          \
     SUB(Service, ERPT)                                                                             \
     SUB(Service, ETicket)                                                                          \
