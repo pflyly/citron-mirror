@@ -55,7 +55,7 @@ android {
 
     defaultConfig {
         // TODO If this is ever modified, change application_id in strings.xml
-        applicationId = "com.antutu.ABenchMark"
+        applicationId = "org.citron.citron_emu"
         minSdk = 30
         //noinspection EditedTargetSdkVersion
         targetSdk = 35
@@ -161,7 +161,7 @@ android {
 
     externalNativeBuild {
         cmake {
-            version = "3.31.6"
+            version = "4.0.1"
             path = file("../../../CMakeLists.txt")
         }
     }
@@ -179,7 +179,8 @@ android {
                     "-DCITRON_USE_BUNDLED_FFMPEG=ON",
                     "-DCITRON_ENABLE_LTO=ON",
                     "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
-                    "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"
+                    "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON",
+                    "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
                 )
 
                 abiFilters("arm64-v8a") // , "x86_64")
