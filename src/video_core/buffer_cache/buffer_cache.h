@@ -1,4 +1,5 @@
 // SPDX-FileCopyrightText: Copyright 2022 yuzu Emulator Project
+// SPDX-FileCopyrightText: Copyright 2025 citron Emulator Project
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
@@ -6,6 +7,7 @@
 #include <algorithm>
 #include <memory>
 #include <numeric>
+#include <unordered_map>
 
 #include "common/range_sets.inc"
 #include "video_core/buffer_cache/buffer_cache_base.h"
@@ -18,7 +20,7 @@ using Core::DEVICE_PAGESIZE;
 
 template <class P>
 BufferCache<P>::BufferCache(Tegra::MaxwellDeviceMemoryManager& device_memory_, Runtime& runtime_)
-    : runtime{runtime_}, device_memory{device_memory_}, memory_tracker{device_memory} {
+    : runtime{runtime_}, device_memory{device_memory_}, memory_tracker{device_memory}, immediate_buffer_alloc{} {
     // Ensure the first slot is used for the null buffer
     void(slot_buffers.insert(runtime, NullBufferParams{}));
     gpu_modified_ranges.Clear();
@@ -1719,8 +1721,31 @@ Binding BufferCache<P>::StorageBufferBinding(GPUVAddr ssbo_addr, u32 cbuf_index,
 
     const std::optional<DAddr> aligned_device_addr = gpu_memory->GpuToCpuAddress(aligned_gpu_addr);
     if (!aligned_device_addr || size == 0) {
-        LOG_WARNING(HW_GPU, "Failed to find storage buffer for cbuf index {}", cbuf_index);
-        return NULL_BINDING;
+        // Use a static counter to track and limit warnings
+        static std::unordered_map<u32, u32> warning_counts;
+
+        // Increment the warning count for this cbuf_index
+        warning_counts[cbuf_index]++;
+
+        // Only log the first warning for each cbuf_index
+        if (warning_counts[cbuf_index] == 1) {
+            LOG_WARNING(HW_GPU, "Failed to find storage buffer for cbuf index {}. Using fallback.",
+                       cbuf_index);
+        } else if (warning_counts[cbuf_index] % 1000 == 0) {
+            // Log occasional reminder warnings
+            LOG_DEBUG(HW_GPU, "Still using fallback for storage buffer cbuf index {} (count: {})",
+                     cbuf_index, warning_counts[cbuf_index]);
+        }
+
+        // Create a dummy binding with non-zero values to avoid potential crashes
+        static DAddr safe_device_addr = 0x1000;
+        static const u32 safe_size = 16 * 1024; // 16KB should be adequate for most cases
+
+        return Binding{
+            .device_addr = safe_device_addr,
+            .size = safe_size,
+            .buffer_id = const_cast<BufferCache<P>*>(this)->FindBuffer(safe_device_addr, safe_size),
+        };
     }
     const std::optional<DAddr> device_addr = gpu_memory->GpuToCpuAddress(gpu_addr);
     ASSERT_MSG(device_addr, "Unaligned storage buffer address not found for cbuf index {}",
