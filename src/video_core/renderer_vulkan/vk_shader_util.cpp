@@ -171,7 +171,7 @@ void AsyncCompileShader(const Device& device, const std::string& shader_path,
     }
 
     // Use actual threading for async compilation
-    std::thread([device_ptr = &device, shader_path, callback = std::move(callback)]() mutable {
+    std::thread([device_ptr = &device, shader_path, outer_callback = std::move(callback)]() mutable {
         auto startTime = std::chrono::high_resolution_clock::now();
 
         try {
@@ -215,25 +215,25 @@ void AsyncCompileShader(const Device& device, const std::string& shader_path,
                     VkShaderModule raw_module = *shader;
 
                     // Submit callback to main thread via command queue for thread safety
-                    SubmitCommandToQueue([callback = std::move(callback), raw_module]() {
-                        callback(raw_module);
+                    SubmitCommandToQueue([inner_callback = std::move(outer_callback), raw_module]() {
+                        inner_callback(raw_module);
                     });
                 } else {
                     LOG_ERROR(Render_Vulkan, "Shader validation failed: {}", shader_path);
-                    SubmitCommandToQueue([callback = std::move(callback)]() {
-                        callback(VK_NULL_HANDLE);
+                    SubmitCommandToQueue([inner_callback = std::move(outer_callback)]() {
+                        inner_callback(VK_NULL_HANDLE);
                     });
                 }
             } else {
                 LOG_ERROR(Render_Vulkan, "Failed to read shader file: {}", shader_path);
-                SubmitCommandToQueue([callback = std::move(callback)]() {
-                    callback(VK_NULL_HANDLE);
+                SubmitCommandToQueue([inner_callback = std::move(outer_callback)]() {
+                    inner_callback(VK_NULL_HANDLE);
                 });
             }
         } catch (const std::exception& e) {
             LOG_ERROR(Render_Vulkan, "Error compiling shader: {}", e.what());
-            SubmitCommandToQueue([callback = std::move(callback)]() {
-                callback(VK_NULL_HANDLE);
+            SubmitCommandToQueue([inner_callback = std::move(outer_callback)]() {
+                inner_callback(VK_NULL_HANDLE);
             });
         }
 
