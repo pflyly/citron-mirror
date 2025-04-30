@@ -164,7 +164,8 @@ endif()
 
 if (CITRON_USE_BUNDLED_VCPKG)
     if (ANDROID)
-        set(ENV{ANDROID_NDK_HOME} "${ANDROID_NDK}")
+        set(ENV{ANDROID_NDK_HOME} ${ANDROID_NDK})
+        set(VCPKG_ADDITIONAL_FLAGS "--allow-unsupported")
         list(APPEND VCPKG_MANIFEST_FEATURES "android")
 
         if (CMAKE_ANDROID_ARCH_ABI STREQUAL "arm64-v8a")
