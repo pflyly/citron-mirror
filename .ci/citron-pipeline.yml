@@ -1,0 +1,106 @@
+# SPDX-FileCopyrightText: 2019 citron Emulator Project
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+trigger:
+- master
+
+variables:
+  DisplayVersion: $[counter(variables['DisplayPrefix'], 1)]
+  BuildName: 'stable'
+
+stages:
+- stage: build
+  displayName: 'build'
+  jobs:
+  - job: build
+    timeoutInMinutes: 120
+    displayName: 'standard'
+    pool:
+      vmImage: ubuntu-latest
+    strategy:
+      maxParallel: 10
+      matrix:
+        linux:
+          BuildSuffix: 'linux'
+          ScriptFolder: 'linux'
+    steps:
+    - template: ./templates/sync-source.yml
+      parameters:
+        artifactSource: $(parameters.artifactSource)
+        needSubmodules: 'true'
+    - template: ./templates/build-single.yml
+      parameters:
+        artifactSource: 'false'
+        cache: 'true'
+        version: $(DisplayVersion)
+    # Make tokens available to scripts
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: |
+          echo "##vso[task.setvariable variable=EARLY_ACCESS_TOKEN]$(EARLY_ACCESS_TOKEN)"
+          echo "##vso[task.setvariable variable=CI_RELEASE_TOKEN]$(CI_RELEASE_TOKEN)"
+
+- stage: build_win
+  displayName: 'build-windows'
+  jobs:
+  - job: build
+    timeoutInMinutes: 120
+    displayName: 'msvc'
+    pool:
+      vmImage: windows-2022
+    steps:
+    - template: ./templates/sync-source.yml
+      parameters:
+        artifactSource: $(parameters.artifactSource)
+        needSubmodules: 'true'
+    - template: ./templates/build-msvc.yml
+      parameters:
+        artifactSource: 'false'
+        cache: 'true'
+        version: $(DisplayVersion)
+    # Make tokens available to scripts
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+          Write-Host "##vso[task.setvariable variable=EARLY_ACCESS_TOKEN]$(EARLY_ACCESS_TOKEN)"
+          Write-Host "##vso[task.setvariable variable=CI_RELEASE_TOKEN]$(CI_RELEASE_TOKEN)"
+
+- stage: build_android
+  displayName: 'build-android'
+  jobs:
+  - job: build
+    timeoutInMinutes: 120
+    displayName: 'android'
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - template: ./templates/sync-source.yml
+      parameters:
+        artifactSource: $(parameters.artifactSource)
+        needSubmodules: 'true'
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: |
+          export USE_DEBUG_KEYSTORE=true
+          chmod +x ./.ci/scripts/android/build.sh
+          ./.ci/scripts/android/build.sh
+    - publish: artifacts
+      artifact: 'citron-$(BuildName)-android'
+      displayName: 'Upload Android Artifacts'
+
+- stage: release
+  displayName: 'release'
+  dependsOn:
+  - build
+  - build_win
+  - build_android
+  jobs:
+  - job: github
+    displayName: 'github'
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - template: ./templates/release-github.yml 

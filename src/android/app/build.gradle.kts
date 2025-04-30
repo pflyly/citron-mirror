@@ -76,21 +76,25 @@ android {
         buildConfigField("String", "BRANCH", "\"${getBranch()}\"")
     }
 
+    // Always use debug keystore for CI builds when USE_DEBUG_KEYSTORE is set
+    val useDebugKeystore = System.getenv("USE_DEBUG_KEYSTORE") == "true"
     val keystoreFile = System.getenv("ANDROID_KEYSTORE_FILE")
+
     signingConfigs {
-        if (keystoreFile != null) {
+        create("default") {
+            storeFile = file("$projectDir/debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+
+        if (keystoreFile != null && !useDebugKeystore) {
             create("release") {
                 storeFile = file(keystoreFile)
                 storePassword = System.getenv("ANDROID_KEYSTORE_PASS")
                 keyAlias = System.getenv("ANDROID_KEY_ALIAS")
                 keyPassword = System.getenv("ANDROID_KEYSTORE_PASS")
             }
-        }
-        create("default") {
-            storeFile = file("$projectDir/debug.keystore")
-            storePassword = "android"
-            keyAlias = "androiddebugkey"
-            keyPassword = "android"
         }
     }
 
@@ -99,7 +103,7 @@ android {
 
         // Signed by release key, allowing for upload to Play Store.
         release {
-            signingConfig = if (keystoreFile != null) {
+            signingConfig = if (keystoreFile != null && !useDebugKeystore) {
                 signingConfigs.getByName("release")
             } else {
                 signingConfigs.getByName("default")

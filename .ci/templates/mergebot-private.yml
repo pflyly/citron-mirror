@@ -1,0 +1,41 @@
+# SPDX-FileCopyrightText: 2019 citron Emulator Project
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+parameters:
+  matchLabel: 'dummy-merge'
+  matchLabelPublic: 'dummy-merge'
+
+steps:
+  - checkout: self
+    fetchDepth: 1
+    submodules: false
+  - task: PythonScript@0
+    displayName: 'Generate Merge Config'
+    inputs:
+      scriptSource: 'inline'
+      script: '${{ parameters.createMergeConfigScript }}'
+  - task: PythonScript@0
+    displayName: 'Discover, Download, and Apply Patches (Stable)'
+    inputs:
+      scriptSource: 'filePath'
+      scriptPath: '.ci/scripts/merge/apply-patches-by-label-private.py'
+      arguments: $(publicLabel)
+      workingDirectory: '$(Build.SourcesDirectory)'
+  - task: PythonScript@0
+    displayName: 'Discover, Download, and Apply Patches (Canary Public)'
+    inputs:
+      scriptSource: 'filePath'
+      scriptPath: '.ci/scripts/merge/apply-patches-by-label-private.py'
+      arguments: $(supporterPublicLabel)
+      workingDirectory: '$(Build.SourcesDirectory)'
+  - task: PythonScript@0
+    displayName: 'Discover, Download, and Apply Patches (Canary Private)'
+    inputs:
+      scriptSource: 'filePath'
+      scriptPath: '.ci/scripts/merge/apply-patches-by-label-private.py'
+      arguments: $(supporterPrivateLabel)
+      workingDirectory: '$(Build.SourcesDirectory)'
+  - script: |
+      echo '##vso[task.setvariable variable=DisplayPrefix]$(tagPrefix)'
+      git rev-parse HEAD
+    displayName: 'Set Version Number'
