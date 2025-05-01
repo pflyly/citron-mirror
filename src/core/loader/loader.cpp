@@ -260,10 +260,12 @@ std::unique_ptr<AppLoader> GetLoader(Core::System& system, FileSys::VirtualFile 
     if (bis_system) {
         auto mii_applet_nca = bis_system->GetEntry(MiiEditId, FileSys::ContentRecordType::Program);
         if (!mii_applet_nca) {
-            LOG_WARNING(Loader, "Firmware is not available. Some games may not function correctly.");
+            LOG_ERROR(Loader, "Firmware is required to launch games but is not available");
+            return nullptr;
         }
     } else {
-        LOG_WARNING(Loader, "System NAND contents not available");
+        LOG_ERROR(Loader, "System NAND contents not available");
+        return nullptr;
     }
 
     FileType type = IdentifyFile(file);

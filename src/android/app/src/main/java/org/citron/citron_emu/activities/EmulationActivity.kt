@@ -83,6 +83,19 @@ class EmulationActivity : AppCompatActivity(), SensorEventListener {
 
         super.onCreate(savedInstanceState)
 
+        // Check if firmware is available
+        if (!NativeLibrary.isFirmwareAvailable()) {
+            AlertDialog.Builder(this)
+                .setTitle(R.string.firmware_missing_title)
+                .setMessage(R.string.firmware_missing_message)
+                .setPositiveButton(R.string.ok) { _, _ ->
+                    finish()
+                }
+                .setCancelable(false)
+                .show()
+            return
+        }
+
         // Add license verification at the start
         LicenseVerifier.verifyLicense(this)
 
@@ -155,13 +168,22 @@ class EmulationActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (event.action == KeyEvent.ACTION_DOWN) {
-            val textChar = event.unicodeChar
-            if (textChar == 0) {
-                // No text, button input.
-                NativeLibrary.submitInlineKeyboardInput(keyCode)
+            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                // Special case, we do not support multiline input, dismiss the keyboard.
+                val overlayView: View =
+                    this.findViewById(R.id.surface_input_overlay)
+                val im =
+                    overlayView.context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                im.hideSoftInputFromWindow(overlayView.windowToken, 0)
             } else {
-                // Text submitted.
-                NativeLibrary.submitInlineKeyboardText(textChar.toChar().toString())
+                val textChar = event.unicodeChar
+                if (textChar == 0) {
+                    // No text, button input.
+                    NativeLibrary.submitInlineKeyboardInput(keyCode)
+                } else {
+                    // Text submitted.
+                    NativeLibrary.submitInlineKeyboardText(textChar.toChar().toString())
+                }
             }
         }
         return super.onKeyDown(keyCode, event)
