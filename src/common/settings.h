@@ -401,11 +401,11 @@ struct Values {
                                                            Category::RendererAdvanced};
     SwitchableSetting<bool> async_presentation{linkage,
 #ifdef ANDROID
-                                               false, // Disabled due to crashes
+                                               false, // Disabled due to instability causing crashes
 #else
-                                               false, // Disabled due to crashes
+                                               false, // Disabled due to instability causing crashes
 #endif
-                                               "async_presentation", Category::RendererAdvanced}; // Hide from UI
+                                               "async_presentation", Category::RendererAdvanced}; // Hidden from UI due to instability
     SwitchableSetting<bool> renderer_force_max_clock{linkage, false, "force_max_clock",
                                                      Category::RendererAdvanced};
     SwitchableSetting<bool> use_reactive_flushing{linkage,
