@@ -137,7 +137,7 @@ RendererVulkan::RendererVulkan(Core::TelemetrySession& telemetry_session_,
     }
 
     // Initialize HybridMemory system
-    if (Settings::values.use_gpu_memory_manager.GetValue()) {
+    if (false && Settings::values.use_gpu_memory_manager.GetValue()) {
 #if defined(__linux__) || defined(__ANDROID__) || defined(_WIN32)
         try {
             // Define memory size with explicit types to avoid conversion warnings
@@ -312,7 +312,7 @@ void RendererVulkan::RenderScreenshot(std::span<const Tegra::FramebufferConfig> 
     }
 
     // If memory snapshots are enabled, take a snapshot with the screenshot
-    if (Settings::values.enable_memory_snapshots.GetValue() && hybrid_memory) {
+    if (false && Settings::values.enable_memory_snapshots.GetValue() && hybrid_memory) {
         try {
             const auto now = std::chrono::system_clock::now();
             const auto now_time_t = std::chrono::system_clock::to_time_t(now);
@@ -328,8 +328,8 @@ void RendererVulkan::RenderScreenshot(std::span<const Tegra::FramebufferConfig> 
             std::string snapshot_path = fmt::format("snapshots/memory_snapshot_{}.bin", time_str);
             hybrid_memory->SaveSnapshot(snapshot_path);
 
-            // Also save a differential snapshot if there's been a previous snapshot
-            if (Settings::values.use_gpu_memory_manager.GetValue()) {
+            // Differential snapshot for tracking memory changes
+            if (false && Settings::values.use_gpu_memory_manager.GetValue()) {
                 std::string diff_path = fmt::format("snapshots/diff_snapshot_{}.bin", time_str);
                 hybrid_memory->SaveDifferentialSnapshot(diff_path);
                 hybrid_memory->ResetDirtyTracking();
@@ -451,7 +451,7 @@ void RendererVulkan::InitializePlatformSpecific() {
 #endif
 
     // Create a compute buffer using the HybridMemory system if enabled
-    if (Settings::values.use_gpu_memory_manager.GetValue()) {
+    if (false && Settings::values.use_gpu_memory_manager.GetValue()) {
         try {
             // Create a small compute buffer for testing
             const VkDeviceSize buffer_size = 1 * 1024 * 1024; // 1 MB

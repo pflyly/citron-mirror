@@ -75,6 +75,11 @@ void QtConfig::ReadQtValues() {
         ReadUIValues();
     }
     ReadQtControlValues();
+
+    // Always disable memory snapshots and hybrid memory
+    Settings::values.use_gpu_memory_manager.SetValue(false);
+    Settings::values.enable_memory_snapshots.SetValue(false);
+    Settings::values.use_nce.SetValue(false);
 }
 
 void QtConfig::ReadQtPlayerValues(const std::size_t player_index) {
@@ -335,6 +340,11 @@ void QtConfig::SaveQtValues() {
         LOG_DEBUG(Config, "Saving Qt configuration values");
     }
     SaveQtControlValues();
+
+    // Ensure memory snapshots and hybrid memory are always disabled
+    Settings::values.use_gpu_memory_manager.SetValue(false);
+    Settings::values.enable_memory_snapshots.SetValue(false);
+    Settings::values.use_nce.SetValue(false);
 
     WriteToIni();
 }
