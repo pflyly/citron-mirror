@@ -14,11 +14,11 @@ Welcome to **Citron**, a cutting-edge Nintendo Homebrew emulator designed to del
 
 ## Download 🚀
 
-Ready to experience Citron? [Download the latest version](https://git.citron-emu.org/Citron/Citron/releases) and dive into your favorite Nintendo homebrew titles!
+Ready to experience Citron? [Download the latest version](https://git.citron-emu.org/citron/emu/-/releases) and dive into your favorite Nintendo homebrew titles!
 
 ## Getting Started 💡
 
-1. **Download and Install**: Head over to the [downloads page](https://git.citron-emu.org/Citron/Citron/releases) to grab the latest release.
+1. **Download and Install**: Head over to the [downloads page](https://git.citron-emu.org/citron/emu/-/releases) to grab the latest release.
 2. **Add Homebrew Games**: Citron is built to play homebrew games. Add them to your game directory and enjoy!
 3. **Configure Your Settings**: Customize your emulator settings to suit your performance needs.
 
