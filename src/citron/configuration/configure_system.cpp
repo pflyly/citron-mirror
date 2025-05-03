@@ -131,13 +131,6 @@ void ConfigureSystem::Setup(const ConfigurationShared::Builder& builder) {
             continue;
         }
 
-        // Skip memory snapshots and hybrid memory settings
-        if (setting->Id() == Settings::values.use_gpu_memory_manager.Id() ||
-            setting->Id() == Settings::values.enable_memory_snapshots.Id() ||
-            setting->Id() == Settings::values.use_nce.Id()) {
-            continue;
-        }
-
         ConfigurationShared::Widget* widget = builder.BuildWidget(setting, apply_funcs);
 
         if (widget == nullptr) {
