@@ -1,5 +1,4 @@
 // SPDX-FileCopyrightText: Copyright 2021 yuzu Emulator Project
-// SPDX-FileCopyrightText: Copyright 2025 Citron Emulator Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #pragma once
@@ -212,11 +211,6 @@ struct Values {
                                              true,
                                              true,
                                              &use_speed_limit};
-    SwitchableSetting<bool> use_nce{linkage, true, "Use Native Code Execution", Category::Core};
-
-    // Memory
-    SwitchableSetting<bool> use_gpu_memory_manager{linkage, false, "Use GPU Memory Manager", Category::Core};
-    SwitchableSetting<bool> enable_memory_snapshots{linkage, false, "Enable Memory Snapshots", Category::Core};
 
     // Cpu
     SwitchableSetting<CpuBackend, true> cpu_backend{linkage,
@@ -401,11 +395,11 @@ struct Values {
                                                            Category::RendererAdvanced};
     SwitchableSetting<bool> async_presentation{linkage,
 #ifdef ANDROID
-                                               false, // Disabled due to instability causing crashes
+                                               true,
 #else
-                                               false, // Disabled due to instability causing crashes
+                                               false,
 #endif
-                                               "async_presentation", Category::RendererAdvanced}; // Hidden from UI due to instability
+                                               "async_presentation", Category::RendererAdvanced};
     SwitchableSetting<bool> renderer_force_max_clock{linkage, false, "force_max_clock",
                                                      Category::RendererAdvanced};
     SwitchableSetting<bool> use_reactive_flushing{linkage,
@@ -618,30 +612,24 @@ struct Values {
                                            Category::Network};
 
     // WebService
-    Setting<bool> enable_telemetry{linkage, true, "enable_telemetry", Category::WebService};
-    Setting<std::string> web_api_url{linkage, "api.ynet-fun.xyz", "web_api_url",
+    Setting<bool> enable_telemetry{linkage, false, "enable_telemetry", Category::WebService};
+    Setting<std::string> web_api_url{linkage, "https://api.ynet-fun.xyz", "web_api_url",
                                      Category::WebService};
     Setting<std::string> citron_username{linkage, std::string(), "citron_username",
                                        Category::WebService};
     Setting<std::string> citron_token{linkage, std::string(), "citron_token", Category::WebService};
 
+    // Memory
+    Setting<bool> use_gpu_memory_manager{linkage, false, "use_gpu_memory_manager", Category::System};
+    Setting<bool> enable_memory_snapshots{linkage, false, "enable_memory_snapshots", Category::System};
+
     // Add-Ons
     std::map<u64, std::vector<std::string>> disabled_addons;
-
-    // Renderer Advanced Settings
-    SwitchableSetting<bool> use_enhanced_shader_building{linkage, false, "Enhanced Shader Building",
-                                                        Category::RendererAdvanced};
-
-    // Add a new setting for shader compilation priority
-        SwitchableSetting<int> shader_compilation_priority{linkage, 0, "Shader Compilation Priority",
-                                                      Category::RendererAdvanced};
 };
 
 extern Values values;
 
 void UpdateGPUAccuracy();
-// boold isGPULevelNormal();
-// TODO: ZEP
 bool IsGPULevelExtreme();
 bool IsGPULevelHigh();
 

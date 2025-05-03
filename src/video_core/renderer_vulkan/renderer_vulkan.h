@@ -1,5 +1,4 @@
 // SPDX-FileCopyrightText: Copyright 2018 yuzu Emulator Project
-// SPDX-FileCopyrightText: Copyright 2025 citron Emulator Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #pragma once
@@ -7,7 +6,6 @@
 #include <memory>
 #include <string>
 #include <variant>
-#include <functional>
 
 #include "common/dynamic_library.h"
 #include "video_core/host1x/gpu_device_memory_manager.h"
@@ -19,11 +17,8 @@
 #include "video_core/renderer_vulkan/vk_state_tracker.h"
 #include "video_core/renderer_vulkan/vk_swapchain.h"
 #include "video_core/renderer_vulkan/vk_turbo_mode.h"
-#include "video_core/renderer_vulkan/vk_texture_manager.h"
-#include "video_core/renderer_vulkan/vk_shader_util.h"
 #include "video_core/vulkan_common/vulkan_device.h"
 #include "video_core/vulkan_common/vulkan_memory_allocator.h"
-#include "video_core/vulkan_common/hybrid_memory.h"
 #include "video_core/vulkan_common/vulkan_wrapper.h"
 
 namespace Core {
@@ -63,9 +58,6 @@ public:
         return device.GetDriverName();
     }
 
-    // Enhanced platform-specific initialization
-    void InitializePlatformSpecific();
-
 private:
     void Report() const;
 
@@ -74,10 +66,6 @@ private:
                               VkDeviceSize buffer_size);
     void RenderScreenshot(std::span<const Tegra::FramebufferConfig> framebuffers);
     void RenderAppletCaptureLayer(std::span<const Tegra::FramebufferConfig> framebuffers);
-
-    // Enhanced error handling
-    bool HandleVulkanError(VkResult result, const std::string& operation);
-    void RecoverFromError();
 
     Core::TelemetrySession& telemetry_session;
     Tegra::MaxwellDeviceMemoryManager& device_memory;
@@ -101,13 +89,6 @@ private:
     BlitScreen blit_applet;
     RasterizerVulkan rasterizer;
     std::optional<TurboMode> turbo_mode;
-
-    // HybridMemory for advanced memory management
-    std::unique_ptr<HybridMemory> hybrid_memory;
-
-    // Enhanced texture and shader management
-    TextureManager texture_manager;
-    ShaderManager shader_manager;
 
     Frame applet_frame;
 };

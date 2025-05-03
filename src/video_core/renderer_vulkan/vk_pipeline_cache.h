@@ -1,5 +1,4 @@
 // SPDX-FileCopyrightText: Copyright 2019 yuzu Emulator Project
-// SPDX-FileCopyrightText: Copyright 2025 citron Emulator Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #pragma once
@@ -11,7 +10,6 @@
 #include <type_traits>
 #include <unordered_map>
 #include <vector>
-#include <mutex>
 
 #include "common/common_types.h"
 #include "common/thread_worker.h"
@@ -158,9 +156,6 @@ private:
 
     std::unordered_map<ComputePipelineCacheKey, std::unique_ptr<ComputePipeline>> compute_cache;
     std::unordered_map<GraphicsPipelineCacheKey, std::unique_ptr<GraphicsPipeline>> graphics_cache;
-
-    // Mutex for thread-safe pipeline cache access
-    mutable std::mutex pipeline_cache;
 
     ShaderPools main_pools;
 

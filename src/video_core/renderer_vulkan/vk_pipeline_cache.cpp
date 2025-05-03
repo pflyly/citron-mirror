@@ -1,5 +1,4 @@
 // SPDX-FileCopyrightText: Copyright 2019 yuzu Emulator Project
-// SPDX-FileCopyrightText: Copyright 2025 Citron Emulator Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <algorithm>
@@ -265,42 +264,18 @@ Shader::RuntimeInfo MakeRuntimeInfo(std::span<const Shader::IR::Program> program
 }
 
 size_t GetTotalPipelineWorkers() {
-    const size_t num_cores = std::max<size_t>(static_cast<size_t>(std::thread::hardware_concurrency()), 2ULL);
-
-    // Calculate optimal number of workers based on available CPU cores
-    size_t optimal_workers;
-
+    const size_t max_core_threads =
+        std::max<size_t>(static_cast<size_t>(std::thread::hardware_concurrency()), 2ULL) - 1ULL;
 #ifdef ANDROID
-    // Mobile devices need more conservative threading to avoid thermal issues
-    // Leave more cores free on Android for system processes and other apps
-    constexpr size_t min_free_cores = 3ULL;
-    if (num_cores <= min_free_cores + 1) {
-        return 1ULL; // At least one worker
+    // Leave at least a few cores free in android
+    constexpr size_t free_cores = 3ULL;
+    if (max_core_threads <= free_cores) {
+        return 1ULL;
     }
-    optimal_workers = num_cores - min_free_cores;
+    return max_core_threads - free_cores;
 #else
-    // Desktop systems can use more aggressive threading
-    if (num_cores <= 3) {
-        optimal_workers = num_cores - 1; // Dual/triple core: leave 1 core free
-    } else if (num_cores <= 6) {
-        optimal_workers = num_cores - 2; // Quad/hex core: leave 2 cores free
-    } else {
-        // For 8+ core systems, use more workers but still leave some cores for other tasks
-        optimal_workers = num_cores - (num_cores / 4); // Leave ~25% of cores free
-    }
+    return max_core_threads;
 #endif
-
-    // Apply threading priority via shader_compilation_priority setting if enabled
-    const int priority = Settings::values.shader_compilation_priority.GetValue();
-    if (priority > 0) {
-        // High priority - use more cores for shader compilation
-        optimal_workers = std::min(optimal_workers + 1, num_cores - 1);
-    } else if (priority < 0) {
-        // Low priority - use fewer cores for shader compilation
-        optimal_workers = (optimal_workers >= 2) ? optimal_workers - 1 : 1;
-    }
-
-    return optimal_workers;
 }
 
 } // Anonymous namespace
@@ -611,128 +586,21 @@ GraphicsPipeline* PipelineCache::BuiltPipeline(GraphicsPipeline* pipeline) const
     if (pipeline->IsBuilt()) {
         return pipeline;
     }
-
     if (!use_asynchronous_shaders) {
         return pipeline;
     }
-
-    // Advanced heuristics for smarter async shader compilation
-
-    // Track stutter metrics for better debugging and performance tuning
-    static thread_local u32 async_shader_count = 0;
-    static thread_local std::chrono::high_resolution_clock::time_point last_async_shader_log;
-    auto now = std::chrono::high_resolution_clock::now();
-
-    // Better detection of UI and critical shaders
-    const bool is_ui_shader = !maxwell3d->regs.zeta_enable;
-    // Check for blend state
-    const bool has_blend = maxwell3d->regs.blend.enable[0] != 0;
-    // Check if texture sampling is likely based on texture units used
-    const bool has_texture = maxwell3d->regs.tex_header.Address() != 0;
-    // Check for clear operations
-    const bool is_clear_operation = maxwell3d->regs.clear_surface.raw != 0;
-    const auto& draw_state = maxwell3d->draw_manager->GetDrawState();
-    const bool small_draw = draw_state.index_buffer.count <= 6 || draw_state.vertex_buffer.count <= 6;
-
-    // Get shader priority from settings
-    const int shader_priority = Settings::values.shader_compilation_priority.GetValue();
-
-    // Record historical usage patterns for future prediction
-    // Create a unique identifier for this shader configuration
-    const u64 draw_config_hash = pipeline->Hash();
-    static thread_local std::unordered_map<u64, u32> shader_usage_count;
-    static thread_local std::unordered_map<u64, bool> shader_is_frequent;
-
-    // Track how often this shader is used
-    shader_usage_count[draw_config_hash]++;
-
-    // After a certain number of uses, consider this a frequently used shader
-    // which should get higher compilation priority in the future
-    if (shader_usage_count[draw_config_hash] >= 3) {
-        shader_is_frequent[draw_config_hash] = true;
-
-        // Predict related shaders that might be used soon
-        if (auto related_pipeline = pipeline->GetLastTransitionedPipeline()) {
-            // Use a string-based representation of the pipeline for prediction
-            std::string pipeline_info = fmt::format("pipeline_{:016x}", related_pipeline->Hash());
-            PredictShader(pipeline_info);
-        }
-    }
-
-    // Always wait for UI shaders if settings specify high priority
-    if (is_ui_shader && (shader_priority >= 0 || small_draw)) {
-        return pipeline;
-    }
-
-    // Wait for frequently used small draw shaders
-    if (small_draw && shader_is_frequent[draw_config_hash]) {
-        return pipeline;
-    }
-
-    // Wait for clear operations as they're usually critical
-    if (is_clear_operation) {
-        return pipeline;
-    }
-
-    // Force wait if high shader priority in settings
-    if (shader_priority > 1) {
-        return pipeline;
-    }
-
-    // More intelligent depth-based heuristics
+    // If something is using depth, we can assume that games are not rendering anything which
+    // will be used one time.
     if (maxwell3d->regs.zeta_enable) {
-        // Check if this is likely a shadow map or important depth-based effect
-        // Check if depth write is enabled and color writes are disabled for all render targets
-        bool depth_only_pass = maxwell3d->regs.depth_write_enabled;
-        if (depth_only_pass) {
-            bool all_color_masked = true;
-            for (size_t i = 0; i < maxwell3d->regs.color_mask.size(); i++) {
-                // Check if any color component is enabled (R, G, B, A fields of ColorMask)
-                if ((maxwell3d->regs.color_mask[i].raw & 0x1111) != 0) {
-                    all_color_masked = false;
-                    break;
-                }
-            }
-
-            // If depth write enabled and all colors masked, this is likely a shadow pass
-            if (all_color_masked) {
-                // This is likely a shadow pass, which is important for visual quality
-                // We should wait for these to compile to avoid flickering shadows
-                return pipeline;
-            }
-        }
-
-        // For other depth-enabled renders, use async compilation
         return nullptr;
     }
-
-    // Refine small draw detection
-    if (small_draw) {
-        // Check if this might be a UI element that we missed
-        if (has_blend && has_texture) {
-            // Likely a textured UI element, wait for it
-            return pipeline;
-        }
-        // For other small draws, assume they're one-off effects
+    // If games are using a small index count, we can assume these are full screen quads.
+    // Usually these shaders are only used once for building textures so we can assume they
+    // can't be built async
+    const auto& draw_state = maxwell3d->draw_manager->GetDrawState();
+    if (draw_state.index_buffer.count <= 6 || draw_state.vertex_buffer.count <= 6) {
         return pipeline;
     }
-
-    // Track and log async shader statistics periodically
-    auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(
-        now - last_async_shader_log).count();
-
-    if (elapsed >= 10) { // Log every 10 seconds
-        async_shader_count = 0;
-        last_async_shader_log = now;
-    }
-    async_shader_count++;
-
-    // Log less frequently to avoid spamming log
-    if (async_shader_count % 100 == 1) {
-        LOG_DEBUG(Render_Vulkan, "Async shader compilation in progress (count={}), completion={:.1f}%",
-                 async_shader_count, GetShaderCompilationProgress() * 100.0f);
-    }
-
     return nullptr;
 }
 
@@ -740,22 +608,6 @@ std::unique_ptr<GraphicsPipeline> PipelineCache::CreateGraphicsPipeline(
     ShaderPools& pools, const GraphicsPipelineCacheKey& key,
     std::span<Shader::Environment* const> envs, PipelineStatistics* statistics,
     bool build_in_parallel) try {
-
-    // Pipeline deduplication optimization
-    {
-        std::lock_guard lock{pipeline_cache};
-        const auto [pair, new_pipeline]{graphics_cache.try_emplace(key)};
-        if (!new_pipeline) {
-            // Found existing pipeline in cache
-            auto& pipeline = pair->second;
-            if (pipeline) {
-                // Return the existing pipeline
-                LOG_DEBUG(Render_Vulkan, "Reusing existing pipeline for key 0x{:016x}", key.Hash());
-                return std::unique_ptr<GraphicsPipeline>(pipeline->Clone());
-            }
-        }
-    }
-
     auto hash = key.Hash();
     LOG_INFO(Render_Vulkan, "0x{:016x}", hash);
     size_t env_index{0};
@@ -766,52 +618,46 @@ std::unique_ptr<GraphicsPipeline> PipelineCache::CreateGraphicsPipeline(
     // Layer passthrough generation for devices without VK_EXT_shader_viewport_index_layer
     Shader::IR::Program* layer_source_program{};
 
-    // Memory optimization: Create a scope for program translation
-    {
-        for (size_t index = 0; index < Maxwell::MaxShaderProgram; ++index) {
-            const bool is_emulated_stage = layer_source_program != nullptr &&
-                                        index == static_cast<u32>(Maxwell::ShaderType::Geometry);
-            if (key.unique_hashes[index] == 0 && is_emulated_stage) {
-                auto topology = MaxwellToOutputTopology(key.state.topology);
-                programs[index] = GenerateGeometryPassthrough(pools.inst, pools.block, host_info,
-                                                            *layer_source_program, topology);
-                continue;
-            }
-            if (key.unique_hashes[index] == 0) {
-                continue;
-            }
-            Shader::Environment& env{*envs[env_index]};
-            ++env_index;
+    for (size_t index = 0; index < Maxwell::MaxShaderProgram; ++index) {
+        const bool is_emulated_stage = layer_source_program != nullptr &&
+                                       index == static_cast<u32>(Maxwell::ShaderType::Geometry);
+        if (key.unique_hashes[index] == 0 && is_emulated_stage) {
+            auto topology = MaxwellToOutputTopology(key.state.topology);
+            programs[index] = GenerateGeometryPassthrough(pools.inst, pools.block, host_info,
+                                                          *layer_source_program, topology);
+            continue;
+        }
+        if (key.unique_hashes[index] == 0) {
+            continue;
+        }
+        Shader::Environment& env{*envs[env_index]};
+        ++env_index;
 
-            const u32 cfg_offset{static_cast<u32>(env.StartAddress() + sizeof(Shader::ProgramHeader))};
-            Shader::Maxwell::Flow::CFG cfg(env, pools.flow_block, cfg_offset, index == 0);
-            if (!uses_vertex_a || index != 1) {
-                // Normal path
-                programs[index] = TranslateProgram(pools.inst, pools.block, env, cfg, host_info);
-            } else {
-                // VertexB path when VertexA is present.
-                auto& program_va{programs[0]};
-                auto program_vb{TranslateProgram(pools.inst, pools.block, env, cfg, host_info)};
-                programs[index] = MergeDualVertexPrograms(program_va, program_vb, env);
-            }
+        const u32 cfg_offset{static_cast<u32>(env.StartAddress() + sizeof(Shader::ProgramHeader))};
+        Shader::Maxwell::Flow::CFG cfg(env, pools.flow_block, cfg_offset, index == 0);
+        if (!uses_vertex_a || index != 1) {
+            // Normal path
+            programs[index] = TranslateProgram(pools.inst, pools.block, env, cfg, host_info);
+        } else {
+            // VertexB path when VertexA is present.
+            auto& program_va{programs[0]};
+            auto program_vb{TranslateProgram(pools.inst, pools.block, env, cfg, host_info)};
+            programs[index] = MergeDualVertexPrograms(program_va, program_vb, env);
+        }
 
-            if (Settings::values.dump_shaders) {
-                env.Dump(hash, key.unique_hashes[index]);
-            }
+        if (Settings::values.dump_shaders) {
+            env.Dump(hash, key.unique_hashes[index]);
+        }
 
-            if (programs[index].info.requires_layer_emulation) {
-                layer_source_program = &programs[index];
-            }
+        if (programs[index].info.requires_layer_emulation) {
+            layer_source_program = &programs[index];
         }
     }
-
     std::array<const Shader::Info*, Maxwell::MaxShaderStage> infos{};
     std::array<vk::ShaderModule, Maxwell::MaxShaderStage> modules;
 
     const Shader::IR::Program* previous_stage{};
     Shader::Backend::Bindings binding;
-
-    // Memory optimization: Process one stage at a time and free intermediate memory
     for (size_t index = uses_vertex_a && uses_vertex_b ? 1 : 0; index < Maxwell::MaxShaderProgram;
          ++index) {
         const bool is_emulated_stage = layer_source_program != nullptr &&
@@ -825,37 +671,22 @@ std::unique_ptr<GraphicsPipeline> PipelineCache::CreateGraphicsPipeline(
         const size_t stage_index{index - 1};
         infos[stage_index] = &program.info;
 
-        // Prioritize memory efficiency by encapsulating SPIR-V generation
-        {
-            const auto runtime_info{MakeRuntimeInfo(programs, key, program, previous_stage)};
-            ConvertLegacyToGeneric(program, runtime_info);
-            const std::vector<u32> code{EmitSPIRV(profile, runtime_info, program, binding)};
-            device.SaveShader(code);
-            modules[stage_index] = BuildShader(device, code);
-            if (device.HasDebuggingToolAttached()) {
-                const std::string name{fmt::format("Shader {:016x}", key.unique_hashes[index])};
-                modules[stage_index].SetObjectNameEXT(name.c_str());
-            }
+        const auto runtime_info{MakeRuntimeInfo(programs, key, program, previous_stage)};
+        ConvertLegacyToGeneric(program, runtime_info);
+        const std::vector<u32> code{EmitSPIRV(profile, runtime_info, program, binding)};
+        device.SaveShader(code);
+        modules[stage_index] = BuildShader(device, code);
+        if (device.HasDebuggingToolAttached()) {
+            const std::string name{fmt::format("Shader {:016x}", key.unique_hashes[index])};
+            modules[stage_index].SetObjectNameEXT(name.c_str());
         }
-
         previous_stage = &program;
     }
-
-    // Use improved thread worker mechanism for better async compilation
     Common::ThreadWorker* const thread_worker{build_in_parallel ? &workers : nullptr};
-    auto pipeline = std::make_unique<GraphicsPipeline>(
+    return std::make_unique<GraphicsPipeline>(
         scheduler, buffer_cache, texture_cache, vulkan_pipeline_cache, &shader_notify, device,
         descriptor_pool, guest_descriptor_queue, thread_worker, statistics, render_pass_cache, key,
         std::move(modules), infos);
-
-    // Cache the result for future deduplication
-    if (pipeline) {
-        std::lock_guard lock{pipeline_cache};
-        // Store a clone that can be used later
-        graphics_cache[key] = std::unique_ptr<GraphicsPipeline>(pipeline->Clone());
-    }
-
-    return pipeline;
 
 } catch (const Shader::Exception& exception) {
     auto hash = key.Hash();
@@ -936,23 +767,6 @@ std::unique_ptr<ComputePipeline> PipelineCache::CreateComputePipeline(
     }
 
     auto program{TranslateProgram(pools.inst, pools.block, env, cfg, host_info)};
-
-    // Add support for bindless texture constant buffer only if needed
-    if (program.info.storage_buffers_descriptors.size() > 0) {
-        // Check if a constant buffer at index 0 already exists
-        const bool has_cb0 = std::any_of(program.info.constant_buffer_descriptors.begin(),
-                                        program.info.constant_buffer_descriptors.end(),
-                                        [](const auto& cb) { return cb.index == 0; });
-
-        // Only add if not already present
-        if (!has_cb0) {
-            Shader::ConstantBufferDescriptor desc;
-            desc.index = 0;
-            desc.count = 1;
-            program.info.constant_buffer_descriptors.push_back(desc);
-        }
-    }
-
     const std::vector<u32> code{EmitSPIRV(profile, program)};
     device.SaveShader(code);
     vk::ShaderModule spv_module{BuildShader(device, code)};
@@ -971,7 +785,7 @@ std::unique_ptr<ComputePipeline> PipelineCache::CreateComputePipeline(
 }
 
 void PipelineCache::SerializeVulkanPipelineCache(const std::filesystem::path& filename,
-                                                 const vk::PipelineCache& vk_pipeline_cache,
+                                                 const vk::PipelineCache& pipeline_cache,
                                                  u32 cache_version) try {
     std::ofstream file(filename, std::ios::binary);
     file.exceptions(std::ifstream::failbit);
@@ -985,10 +799,10 @@ void PipelineCache::SerializeVulkanPipelineCache(const std::filesystem::path& fi
 
     size_t cache_size = 0;
     std::vector<char> cache_data;
-    if (vk_pipeline_cache) {
-        vk_pipeline_cache.Read(&cache_size, nullptr);
+    if (pipeline_cache) {
+        pipeline_cache.Read(&cache_size, nullptr);
         cache_data.resize(cache_size);
-        vk_pipeline_cache.Read(&cache_size, cache_data.data());
+        pipeline_cache.Read(&cache_size, cache_data.data());
     }
     file.write(cache_data.data(), cache_size);
 

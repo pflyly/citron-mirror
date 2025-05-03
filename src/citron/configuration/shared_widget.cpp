@@ -760,17 +760,6 @@ Widget::Widget(Settings::BasicSetting* setting_, const TranslationMap& translati
         enable &= setting.UsingGlobal();
     }
 
-    // Disable memory snapshot and hybrid memory checkboxes
-    if (static_cast<u32>(id) == Settings::values.use_gpu_memory_manager.Id() ||
-        static_cast<u32>(id) == Settings::values.enable_memory_snapshots.Id() ||
-        static_cast<u32>(id) == Settings::values.use_nce.Id()) {
-        enable = false;
-        // Also disable the checkbox to prevent it from being changed
-        if (checkbox) {
-            checkbox->setEnabled(false);
-        }
-    }
-
     this->setEnabled(enable);
 
     this->setToolTip(tooltip);
