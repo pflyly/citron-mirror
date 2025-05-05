@@ -1,6 +1,5 @@
 // SPDX-FileCopyrightText: 2015 Citra Emulator Project
 // SPDX-FileCopyrightText: 2018 yuzu Emulator Project
-// SPDX-FileCopyrightText: 2025 Citron Emulator Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <algorithm>
@@ -738,21 +737,12 @@ struct Memory::Impl {
         const u8* const ptr = GetPointerImpl(
             GetInteger(vaddr),
             [vaddr]() {
-                // Add special handling for null pointer reads
-                if (GetInteger(vaddr) == 0 || GetInteger(vaddr) < 0x1000) {
-                    LOG_ERROR(HW_Memory, "Null pointer Read{} @ 0x{:016X}", sizeof(T) * 8,
-                              GetInteger(vaddr));
-                    return;
-                }
                 LOG_ERROR(HW_Memory, "Unmapped Read{} @ 0x{:016X}", sizeof(T) * 8,
                           GetInteger(vaddr));
             },
             [&]() { HandleRasterizerDownload(GetInteger(vaddr), sizeof(T)); });
         if (ptr) {
             std::memcpy(&result, ptr, sizeof(T));
-        } else if (GetInteger(vaddr) == 0) {
-            // Return 0 for null pointer reads instead of random memory
-            result = 0;
         }
         return result;
     }
@@ -771,12 +761,6 @@ struct Memory::Impl {
         u8* const ptr = GetPointerImpl(
             GetInteger(vaddr),
             [vaddr, data]() {
-                // Add special handling for null pointer writes
-                if (GetInteger(vaddr) == 0 || GetInteger(vaddr) < 0x1000) {
-                    LOG_ERROR(HW_Memory, "Null pointer Write{} @ 0x{:016X} = 0x{:016X}", sizeof(T) * 8,
-                              GetInteger(vaddr), static_cast<u64>(data));
-                    return;
-                }
                 LOG_ERROR(HW_Memory, "Unmapped Write{} @ 0x{:016X} = 0x{:016X}", sizeof(T) * 8,
                           GetInteger(vaddr), static_cast<u64>(data));
             },
@@ -784,7 +768,6 @@ struct Memory::Impl {
         if (ptr) {
             std::memcpy(ptr, &data, sizeof(T));
         }
-        // Silently ignore writes to null pointer
     }
 
     template <typename T>
@@ -910,9 +893,7 @@ struct Memory::Impl {
 #endif
 };
 
-Memory::Memory(Core::System& system_) : system(system_), impl(std::make_unique<Impl>(system_)), gen(rd()) {
-    // Initialize the random number distribution
-    dis = std::uniform_int_distribution<u64>(0, std::numeric_limits<u64>::max());
+Memory::Memory(Core::System& system_) : system{system_} {
     Reset();
 }
 
@@ -1096,54 +1077,28 @@ void Memory::MarkRegionDebug(Common::ProcessAddress vaddr, u64 size, bool debug)
 }
 
 bool Memory::InvalidateNCE(Common::ProcessAddress vaddr, size_t size) {
-    // Add detailed debug logging
-    LOG_DEBUG(HW_Memory, "JIT requesting NCE invalidation - Address: 0x{:016X}, Size: {} bytes",
-              GetInteger(vaddr), size);
-
-    // First check if the memory region is valid and executable
-    if (!IsValidVirtualAddressRange(vaddr, size)) {
-        LOG_WARNING(HW_Memory, "Skipping InvalidateNCE: Invalid address range - {} bytes @ 0x{:016X}",
-                   size, GetInteger(vaddr));
-        return false;
-    }
-
     [[maybe_unused]] bool mapped = true;
     [[maybe_unused]] bool rasterizer = false;
 
-    // Get pointer and check memory type
     u8* const ptr = impl->GetPointerImpl(
         GetInteger(vaddr),
         [&] {
-            LOG_WARNING(HW_Memory,
-                "Skipping InvalidateNCE: Unmapped memory region - {} bytes @ 0x{:016X}",
-                size, GetInteger(vaddr));
+            LOG_ERROR(HW_Memory, "Unmapped InvalidateNCE for {} bytes @ {:#x}", size,
+                      GetInteger(vaddr));
             mapped = false;
         },
         [&] { rasterizer = true; });
-
-    // Handle rasterizer memory separately
     if (rasterizer) {
-        LOG_DEBUG(HW_Memory, "Invalidating rasterizer memory region - {} bytes @ 0x{:016X}",
-                 size, GetInteger(vaddr));
         impl->InvalidateGPUMemory(ptr, size);
     }
 
 #ifdef __linux__
-    // Handle separate heap mapping on Linux
-    if (!rasterizer && mapped && ptr) {
-        LOG_DEBUG(HW_Memory, "Handling separate heap mapping for NCE region");
+    if (!rasterizer && mapped) {
         impl->buffer->DeferredMapSeparateHeap(GetInteger(vaddr));
     }
 #endif
 
-    // Return success only if we have a valid pointer and the region was mapped
-    const bool success = mapped && ptr != nullptr;
-    if (!success) {
-        LOG_WARNING(HW_Memory, "NCE invalidation failed - Address: 0x{:016X}, Size: {} bytes",
-                   GetInteger(vaddr), size);
-    }
-
-    return success;
+    return mapped && ptr != nullptr;
 }
 
 bool Memory::InvalidateSeparateHeap(void* fault_address) {
@@ -1152,50 +1107,6 @@ bool Memory::InvalidateSeparateHeap(void* fault_address) {
 #else
     return false;
 #endif
-}
-
-Common::ProcessAddress Memory::GenerateRandomBaseAddress() {
-    u64 random_bits = dis(gen);
-    return Common::ProcessAddress((random_bits & ~NRO_BASE_ADDRESS_RANDOMIZATION_MASK) |
-                                (random_bits & NRO_BASE_ADDRESS_RANDOMIZATION_MASK));
-}
-
-Memory::MemoryRegion* Memory::FindRegion(Common::ProcessAddress address) {
-    for (auto& entry : memory_regions) {
-        if (address >= entry.second.start_address &&
-            address < entry.second.start_address + entry.second.size) {
-            return &entry.second;
-        }
-    }
-    return nullptr;
-}
-
-void Memory::MapMemoryRegion(Common::ProcessAddress start_address, u64 size, MemoryRegionType type,
-                           bool exec, bool write) {
-    if (start_address + size > EMULATED_MEMORY_SIZE) {
-        LOG_ERROR(HW_Memory, "Memory mapping exceeds emulated memory boundaries at address {:016X}",
-                  GetInteger(start_address));
-        return;
-    }
-
-    // Create the memory region
-    memory_regions[start_address] = MemoryRegion(start_address, size, type, exec, write);
-
-    // Map the region in the page table
-    Common::MemoryPermission perms{};
-    if (exec) perms |= Common::MemoryPermission::Execute;
-    if (write) perms |= Common::MemoryPermission::Write;
-    perms |= Common::MemoryPermission::Read;
-
-    // Using the MapMemoryRegion method defined in the Impl struct
-    impl->MapMemoryRegion(*impl->current_page_table, start_address, size,
-                         Common::PhysicalAddress(GetInteger(start_address)), perms, false);
-}
-
-Common::ProcessAddress Memory::MapBinary(u64 size) {
-    Common::ProcessAddress base_address = GenerateRandomBaseAddress();
-    MapMemoryRegion(base_address, size, MemoryRegionType::BinaryMemory, true, true);
-    return base_address;
 }
 
 } // namespace Core::Memory

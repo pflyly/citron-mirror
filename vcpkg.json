@@ -1,7 +1,7 @@
 {
     "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
     "name": "citron",
-    "builtin-baseline": "c82f74667287d3dc386bce81e44964370c91a289",
+    "builtin-baseline": "1318ab14aae14db20085441cd71366891a9c9d0c",
     "version": "1.0",
     "dependencies": [
         "boost-algorithm",
@@ -31,7 +31,9 @@
     "features": {
         "citron-tests": {
             "description": "Compile tests",
-            "dependencies": [ "catch2" ]
+            "dependencies": [
+                "catch2"
+            ]
         },
         "web-service": {
             "description": "Enable web services (telemetry, etc.)",
@@ -55,11 +57,11 @@
     "overrides": [
         {
             "name": "catch2",
-            "version": "3.8.0"
+            "version": "3.3.1"
         },
         {
             "name": "fmt",
-            "version": "11.0.2"
+            "version": "10.1.1"
         }
     ]
 }
