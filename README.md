@@ -18,9 +18,10 @@ Ready to experience Citron? [Download the latest version](https://git.citron-emu
 
 ## Getting Started 💡
 
-1. **Download and Install**: Head over to the [downloads page](https://git.citron-emu.org/citron/emu/-/releases) to grab the latest release.
-2. **Add Homebrew Games**: Citron is built to play homebrew games. Add them to your game directory and enjoy!
-3. **Configure Your Settings**: Customize your emulator settings to suit your performance needs.
+1. **Check the System Requirements** Head over to this link to check the requirements to run this emulator [system requirements page](https://evilperson1337.notion.site/Hardware-Requirements-1d957c2edaf680418e2bf2c7239170ce)
+2. **Download and Install**: Head over to the [downloads page](https://git.citron-emu.org/citron/emu/-/releases) to grab the latest release.
+3. **Add Homebrew Games**: Citron is built to play homebrew games. Add them to your game directory and enjoy!
+4. **Configure Your Settings**: Customize your emulator settings to suit your performance needs.
 
 ## Source Code 🔧
 
